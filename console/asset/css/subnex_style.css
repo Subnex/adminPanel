@@ -1,0 +1,153 @@
+
+
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+label {
+    display: block;
+    text-align: left;
+    margin: 8px 0 5px;
+    color: #333;
+}
+input[type=submit]:hover {
+	background-color: #007bff;
+}
+
+button:focus {
+	outline: none;
+}
+
+
+.error {
+	padding: 6px 20px;
+	border-radius: 3px;
+	background-color: #fb817c;
+	border: 1px solid #e46b66;
+}
+
+.success {
+	background-color: #48e0a4;
+	border: #40cc94 1px solid;
+}
+
+
+.validation-message {
+	color: #e20900;
+	display: inline-block;
+}
+
+.label {
+	margin-bottom: 3px;
+}
+table {
+	font-family: arial, sans-serif;
+	border-collapse: collapse;
+	width: 100%;
+  }
+  
+  td {
+	border: 1px solid #dddddd;
+	text-align: left;
+	padding: 8px;
+  }
+  th{
+  
+	 background-color: #3d648a;
+	 color: #fff;
+	 padding: 10px;
+	 border-right: 1px solid white;
+	
+  }
+	
+	#editForm {
+		display: none; /* Initially hidden */
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+		backdrop-filter: blur(5px); /* Blur effect */
+		justify-content: center;
+		align-items: center;
+	}
+	#newForm {
+	  display: none; /* Initially hidden */
+	  position: fixed;
+	  top: 0;
+	  left: 0;
+	  width: 100%;
+	  height: 100%;
+	  background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+	  backdrop-filter: blur(5px); /* Blur effect */
+	  justify-content: center;
+	  align-items: center;
+	}
+	
+	.popup {
+		background: white;
+		/*padding: 20px;*/
+		border-radius: 8px;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+		text-align: center;
+		min-width: 700px;
+	}
+	.popup h3{
+	  margin-top: 0px;
+	}
+	.popup label{
+	  margin-left: 10%;
+		float: left;
+	}
+	.popup input {
+	  margin-right: 15%;
+	  float: right;
+	  min-height: 30px;
+	  min-width: 380px;
+	  margin-top: 5px;
+	}
+	.popup select{
+		margin-right: 42%;
+		float: right;
+		min-height: 30px;
+		min-width: 190px;
+		margin-top: 5px;
+	}
+	.popupCheckBox {
+		float: left !important;
+		min-height: 30px !important;
+		min-width: 20px !important;
+		margin-top: 5px;
+		margin-left: 8% !important;
+	}
+	.popupButtonDiv
+	{
+	margin-top: 10px;
+	position: relative;
+	padding-left: 10%;
+	/* padding-top: 11px; */
+	min-height: 50px;
+	margin-top: 8%;
+	}
+	.popupHeader
+	{
+	height: 40px;
+	width: 100%;
+	background-color: #3d648a;
+	padding: 5px;
+	color: #fff;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+	margin-bottom: 15px;
+	}
+	.marginTop10px{
+		margin-top:10px;
+	  }
+	  .txtAlignCenter
+	  {
+	   text-align: center;
+	  }
+	

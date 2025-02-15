@@ -1,0 +1,80 @@
+.DetailDivCls
+{
+    height: 190px;
+    width: 455px;
+    background-color: #fff;
+    border: 1px solid #4e73df;
+    border-radius: 5px;
+    margin: 15px;
+    float: left;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-weight: 500;
+
+}
+.floatRight10px
+{
+    float: right;
+    margin-right:10px;
+}
+.innerHeadDiv
+{
+    height: 35px;
+    width: 100%;
+    /* background-color: #337ab7; */
+    color: #134aac;
+    padding-left: 3%;
+    font-size: 22px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom: 1px solid orange; 
+}
+.innerHeadDiv2
+{
+    height: 35px;
+    width: 100%;
+    /* background-color: #337ab7; */
+    color: #1373ac;
+    padding-left: 3%;
+    font-size: 22px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom: 1px solid orange; 
+}
+.inputText{
+    box-sizing: border-box;
+    width: 300px;
+    /* height: initial; */
+    padding: 8px 5px;
+    border: 1px solid #9a9a9a;
+    border-radius: 3px;
+    height: 30px !important;
+    font-weight: 400 !important;
+}
+.main-container
+{
+    height: 90%;
+    width: 100%;
+    margin: 1%;
+    float: left;
+}
+body p{
+    height: 20px;
+    padding-left: 3%;
+    border-bottom: 1px solid #f0eeee;
+    margin-top: 10px;
+}
+body table td{
+    padding :2%;
+}
+.gotoPageDiv
+{
+    font-family: sans-serif;
+    font-weight: 700;
+    float: right;
+    margin-right: 2%;
+}
+.imgCls
+{
+    height: 30px;
+    width: 30px;
+}

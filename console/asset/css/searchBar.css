@@ -1,0 +1,53 @@
+.topBar
+{
+
+    height: 55px;
+    width: 100%;
+    border-bottom: 1px solid #dedcdc;
+    padding-top: 3px;
+   
+}
+.topBarInner
+{
+    margin-left: 1%;
+    font-size: 16px;
+    font-weight: bold;
+    padding-left: 1%;
+}
+.searchBarBtn
+{
+    margin-top:0% !important;
+}
+.SearchText
+{
+  padding: 5px;
+  /* margin-bottom: 0px; */
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 14px !important;
+  font-weight: 200;
+  min-width: 300px;
+  font-family: sans-serif;
+}
+.searchButton
+  {
+    padding: 5px 0px !important;
+    min-width: 100px !important;
+    font-size: 1em;
+    cursor: pointer !important;
+    border-radius: 3px !important;
+    color: #fff !important;
+    font-weight: bold !important;
+    background-color: #2967c9 !important;
+    border-color: #2967c9 !important;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .searchButton:hover
+  {
+    
+    background-color: #eb670f !important;
+    
+    
+  }

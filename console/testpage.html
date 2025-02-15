@@ -1,0 +1,64 @@
+<table>
+    <thead>
+        
+            <th>Account ID</th>
+            <th>User Name</th>
+            <th>Mobile</th>
+            <th>DOB</th>
+            <th>Profile Img</th>
+            <th>Status</th>
+            <th>Action</th> 
+        
+    </thead>
+    <?php $index =0; $totalRecords = count($result);  while ($index < $totalRecords): $row = $result[$index] ; $index++?>
+        <tr>
+            <td class="txtAlignCenter"><?php echo $row['user_publisher_id']; ?></td>
+            <td><?php echo $row['username']; ?></td>
+            <td class="txtAlignCenter"><?php echo $row['mobile']; ?></td>
+            <td class="txtAlignCenter"><?php echo date("d-M-Y", strtotime($row['date_of_birth'])); ?></td>
+            <td class="txtAlignCenter"><img src="<?php echo $row['profile_image']; ?>" height="50px" width="100px" /></td>
+            <td class="txtAlignCenter"><?php  if($row['status'] == 1){echo "Active";}else{echo "InActive";} ?></td>
+            <td class="txtAlignCenter">
+                <button onclick="editAccount('<?php echo $row['user_publisher_id']; ?>', '<?php echo addslashes($row['username']); ?>','<?php echo addslashes($row['date_of_birth']);?>','<?php echo addslashes($row['status']); ?>')"><img src="img/edit.png" height="20px" width="20px" /></button>
+            </td>
+        </tr>
+        <?php endwhile; ?> 
+    </table>
+
+
+
+
+
+
+
+    <table>
+        <thead>
+            <tr>
+                <th>Product Code</th>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Sub Category</th>
+                <th>Owner Name</th>
+                <th>Rental Mode</th>
+                <th>Rental Price(INR)</th>
+                <th>Status</th>
+                <th>Action</th> 
+            </tr>
+        </thead>
+        <?php foreach($result as $row) {?>
+            <tr>
+                <td class="txtAlignCenter"><a href="../console/productDetails.php?id=<?php echo $row['product_code']; ?>" ><?php echo $row['product_code']; ?></a></td>
+                <td><?php echo $row['name']; ?></td>
+                <td class="txtAlignCenter" ><?php echo  $row['category_name']; ?></td> 
+                <td class="txtAlignCenter"><?php echo $row['sub_category_name']; ?></td>
+                <td class="txtAlignCenter"><?php echo $row['user_publisher_id']; ?></td>
+                <td class="txtAlignCenter"><?php echo $row['rent_mode_code']; ?></td>
+                <td class="txtAlignCenter"><?php echo $row['list_price']; ?></td>
+                <td class="txtAlignCenter"><?php echo $row['status']; ?></td>
+                <td class="txtAlignCenter">
+                    <button onclick="editProduct('<?php echo $row['product_code']; ?>', '<?php echo addslashes($row['name']); ?>', '<?php echo $row['category_name']; ?>', '<?php echo $row['sub_category_name']; ?>','<?php echo addslashes($row['rent_mode_code']);?>','<?php echo addslashes($row['list_price']);?>','<?php echo addslashes($row['status']); ?>')"><img src="img/edit.png" height="20px" width="20px" /></button>
+                </td>
+            </tr>
+        <?php }; ?> 
+        
+    </table>

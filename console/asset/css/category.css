@@ -1,0 +1,205 @@
+.MainDiv
+{
+    border: 2px solid #f4f1f1;
+    height: 85%;
+    width: 98%;
+    margin: 1%;
+    border-radius: 5px;
+    background-color: #fff;
+    position: relative;
+}
+
+  .categoryDetailSection
+  {
+    margin-left: 1%;
+    margin-top: 2%;
+    WIDTH: 98%;
+    max-height: 495px; /* Set the maximum height for the table */
+    overflow-y: auto; /* Enable vertical scroll */
+  }
+  thead th {
+    
+    top: 0;
+    background-color: #3d648a;
+    color: white;
+    
+    padding: 8px;
+    text-align: center;
+  }
+  table td{
+    padding-left: 8px;
+  }
+  .inputSelect 
+  {
+    box-sizing: border-box;
+    width: 100px;
+    height: initial;
+    padding: 8px 5px;
+    border: 1px solid #9a9a9a;
+    border-radius: 3px;
+    margin-left: 1%;
+  }
+  .searchFlagBtn
+  {
+    width: 220px !important;
+  
+  }
+  .ActionCls
+  {
+    width: 100px !important;
+  }
+  .valDisplayDiv
+  {
+    float: left;
+    height: 60px;
+    width: 500px;
+    border: 1px solid #dbd7d7;;
+    border-radius: 5px;
+    margin: 1%;
+
+  }
+  
+  .border1px
+  {
+    border: 1px solid #dbd7d7;
+  }
+
+  
+  
+  .catCardCustomCss
+  {
+    width: 100% !important;
+    height: 190px !important;
+  }
+  .cat_headerCls
+  {
+    padding:1%;
+    font-weight: bold;
+  }
+  .subcat_headerCls
+  {
+    padding-left: 1%;
+    float: left;
+  }
+  .categorySecEditDiv
+  {
+        height: 100px;
+        width: 98%;
+        border: 1px solid #dbd7d7;;
+        border-radius: 5px;
+        margin: 1%;
+        float: left;
+  }
+  .categorySecReadDiv
+  {
+        height: 100px;
+        width: 98%;
+        border: 1px solid #dbd7d7;;
+        border-radius: 5px;
+        margin: 1%;
+        float: left;
+  }
+  .saveCategory
+  {
+        margin-left: 3%;
+  }
+  .UpdateCategory
+  {
+        margin-left: 3%;
+  }
+
+  .SubcategorySecDiv
+  {
+    height: 300px;
+    width: 98%;
+    border: 1px solid #dbd7d7;;
+    border-radius: 5px;
+    margin: 1%;
+    float: left;
+  }
+  .fieldLabel
+  {
+        font-size: 18px;
+        font-weight: 600;
+        float: left;
+        width: 200px;
+        background-color: #eaeaea;
+        height: 100%;
+        padding: 3%;
+        border-radius: 5px;
+  }
+  .fieldVal
+  {
+    font-size: 20px;
+    margin-top: 2%;
+    text-align: center;
+  }
+  .footerBtnDiv
+  {
+ 
+    padding: 1%;
+    height: 60px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+  }
+  .center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+  }
+  .displayNone
+{
+  display:none;
+}
+.displayBlock
+{
+  display: block;
+}
+
+#newSubCatForm {
+  display: none; /* Initially hidden */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+  backdrop-filter: blur(5px); /* Blur effect */
+  justify-content: center;
+  align-items: center;
+}
+.SubCatHeaderleft
+{
+  float: left;
+  padding: 10px;
+}
+.SubCatHeaderRight
+{
+  float:right;
+  padding: 10px;
+}
+.catDetailsTxt
+{
+  float: left;
+}
+.MainDivSubCategory
+{
+  border: 2px solid #f4f1f1;
+  height: 95%;
+  width: 98%;
+  margin: 1%;
+  border-radius: 5px;
+  background-color: #fff;
+  position: relative;
+}
+.SubCategoryDetailSection{
+  margin-left: 1%;
+  margin-top: 1%;
+  WIDTH: 98%;
+  max-height: 850px;
+  overflow-y: auto;
+}

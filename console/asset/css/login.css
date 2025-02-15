@@ -1,0 +1,94 @@
+
+.loginDiv
+{
+	max-width: 400px;
+    width: 90%;
+    padding: 20px;
+	padding-top: 5px;
+    background:#fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin: 20px auto;
+    text-align: center;
+    flex-grow: 1;
+    max-height: 350px;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+label {
+    display: block;
+    text-align: left;
+    margin: 8px 0 5px;
+    color: #333;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+.loginLabel
+{
+	font-size: 20px;
+	font-family: sans-serif;
+}
+
+
+input[type=submit] {
+	width: 100%;
+    padding: 4px;
+    background-color: #0070d2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    min-height: 50px;
+    Max-height: 50px;
+}
+
+input[type=submit]:hover {
+	background-color: #2e84ca;
+    font-size: 18px;
+    color:aliceblue;
+}
+
+button:focus {
+	outline: none;
+}
+
+.login-section
+{
+    border-top: 2px solid rgb(16, 68, 180);
+}
+.error {
+	padding: 6px 20px;
+	border-radius: 3px;
+	background-color: #fb817c;
+	border: 1px solid #e46b66;
+}
+
+.success {
+	background-color: #48e0a4;
+	border: #40cc94 1px solid;
+}
+
+
+.validation-message {
+	color: #e20900;
+	display: inline-block;
+}
+
+.label {
+	margin-bottom: 3px;
+}
+
+
