@@ -12,7 +12,7 @@
       //require '../vendor/autoload.php';
       $accCls = new accountCls();
      
-
+ //test
     //update 
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update'])) 
     {
