@@ -7,7 +7,7 @@ class aboutUsCls
         require_once __DIR__ . '/../Model/DataSource.php';
         $this->ds= new DataSource();
     }
-
+    //test commit
     public function getAboutUs($search)
     {
         $PDOConnection = $this->ds->getAliveConnection();
