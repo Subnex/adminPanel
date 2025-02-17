@@ -1,2 +1,2 @@
-./console/model/.env
-./site_assets/.env
+/console/model/.env
+/site_assets/.env
