@@ -18,6 +18,10 @@ session_start();
 
  $productDetails = $homeCls->FetchProductDetails();
  $categoryDetails = $homeCls->FetchCategoryDetails();
+ $caseDetails = $homeCls->FetchCaseDetails();
+ $productReqDetails = $homeCls->FetchOutGoingRequestDetails();
+ $dealDetails = $homeCls->FetchDealDetails();
+ $reqDetails = $homeCls->FetchReqDetails();
  //$productDetails = $products['details']; 
  //print_r($categoryDetails['totalRec']);
      
@@ -32,28 +36,31 @@ session_start();
 
         <div class="main-container">   
                 <div class="DetailDivCls">
+                    <!-- Product Binding --->
                     <div class="innerHeadDiv">
-                    <img src="../console/img/checklist.gif" class="imgCls" /> Products Details
+                        <img src="../console/img/product_listing.gif" class="imgCls" /> Products Details
+                        </div>
+                        <p>Total Listing  <span  style="float: right;margin-right:10px;"><?php print_r( $productDetails['totalRec']['totalRec']);?></span></p>
+                        <p>Active Listing <span  style="float: right;margin-right:10px;"><?php print_r( $productDetails['totalActiveRec']['totalActiveRec']);?></span></p>
+                        <p>InActive Listing <span  style="float: right;margin-right:10px;"><?php print_r( $productDetails['totalInActiveRec']['totalInActiveRec']);?></span></p>
+                        <p>Today's Listing <span  style="float: right;margin-right:10px;"><?php print_r( $productDetails['totalCreatedTodayRec']['totalCreatedTodayRec']);?></span></p>
+                        <div class="gotoPageDiv"><a href ="../console/product.php" >Go to Page</a></div>
                     </div>
-                    <p>Total Listing  <span  style="float: right;margin-right:10px;"><?php print_r( $productDetails['totalRec']['totalRec']);?></span></p>
-                    <p>Active Listing <span  style="float: right;margin-right:10px;"><?php print_r( $productDetails['totalActiveRec']['totalActiveRec']);?></span></p>
-                    <p>InActive Listing <span  style="float: right;margin-right:10px;"><?php print_r( $productDetails['totalInActiveRec']['totalInActiveRec']);?></span></p>
-                    <p>Today's Listing <span  style="float: right;margin-right:10px;"><?php print_r( $productDetails['totalCreatedTodayRec']['totalCreatedTodayRec']);?></span></p>
-                    <div class="gotoPageDiv"><a href ="../console/product.php" >Go to Page</a></div>
-                    </div>
+                     <!-- Category Binding --->
                     <div class="DetailDivCls">
                         <div class="innerHeadDiv">
-                        <img src="../console/img/banner.gif" class="imgCls" /> Category Overview
+                        <img src="../console/img/category.gif" class="imgCls" /> Category Overview
                         </div>
                         <p>Total Listing <span  style="float: right;margin-right:10px;"><?php print_r( $categoryDetails['totalRec']['totalRec']);?></span></p>
                         <p>Active Listing<span  style="float: right;margin-right:10px;"><?php print_r( $categoryDetails['totalActiveRec']['totalActiveRec']);?></span></p>
                         <p>InActive Listing<span  style="float: right;margin-right:10px;"><?php print_r( $categoryDetails['totalInActiveRec']['totalInActiveRec']);?></span></p>
                         <p>Today's Listing<span  style="float: right;margin-right:10px;"><?php print_r( $categoryDetails['totalCreatedTodayRec']['totalCreatedTodayRec']);?></span></p>
-                        <div class="gotoPageDiv"><a href ="../console/case.php" >Go to Page</a></div>
+                        <div class="gotoPageDiv"><a href ="../console/category.php" >Go to Page</a></div>
                     </div>
+                     <!-- User Binding --->
                     <div class="DetailDivCls">
                         <div class="innerHeadDiv">
-                        <img src="../console/img/user.gif" class="imgCls" /> Users Details
+                        <img src="../console/img/professionalUser.gif" class="imgCls" /> Users Details
                         </div>
                         <p>Total User  <span  style="float: right;margin-right:10px;"><?php print_r( $userDetails['totalUser']['totalUser']);?></span></p>
                         <p>Active User <span  style="float: right;margin-right:10px;"><?php print_r( $userDetails['totalActiveUser']['totalActiveUser']);?></span></p>
@@ -62,62 +69,57 @@ session_start();
                  
                         <div class="gotoPageDiv"><a href ="../console/userMgnt.php" >Go to Page</a></div>
                     </div>
+                     <!-- Case Binding --->
                     <div class="DetailDivCls">
-                    <div class="innerHeadDiv2">
-                    <img src="../console/img/message.gif" class="imgCls" /> Case Details
-                    </div>
-                    <p>Total Category :15</p>
-                    <p>Active Category :12</p>
-                    <p>InActive Category :3</p>
-                    <div class="gotoPageDiv"><a href ="../console/category.php" >Go to Page</a></div>
-                    </div>
-                    <div class="DetailDivCls">
-                        <div class="innerHeadDiv2">
-                        <img src="../console/img/banner.gif" class="imgCls" /> Banner Details
+                        <div class="innerHeadDiv">
+                        <img src="../console/img/timer.gif" class="imgCls" /> Case Details
                         </div>
-                        <p>Total Banner :10</p>
-                        <p>Active Listing :5</p>
-                        <p>InActive Listing :5</p>
-                        <div class="gotoPageDiv"><a href ="../console/banner.php" >Go to Page</a></div>
+                        <p>Total Cases  <span  style="float: right;margin-right:10px;"><?php print_r( $caseDetails['totalRec']['totalRec']);?></span></p>
+                        <p>Open Cases <span  style="float: right;margin-right:10px;"><?php print_r( $caseDetails['totalActiveRec']['totalActiveRec']);?></span></p>
+                        <p>OverDue Cases <span  style="float: right;margin-right:10px;"><?php print_r( $caseDetails['totalInActiveRec']['totalInActiveRec']);?></span></p>
+                        <p>Today's Cases <span  style="float: right;margin-right:10px;"><?php print_r( $caseDetails['totalCreatedTodayRec']['totalCreatedTodayRec']);?></span></p>
+                 
+                        <div class="gotoPageDiv"><a href ="../console/userMgnt.php" >Go to Page</a></div>
                     </div>
-                    <div class="DetailDivCls">
-                        <div class="innerHeadDiv2">
-                        <img src="../console/img/computer.gif" class="imgCls" /> Error Code Details
+                     
+                     <!-- Deal Details Binding --->
+                     <div class="DetailDivCls">
+                        <div class="innerHeadDiv">
+                        <img src="../console/img/deal.gif" class="imgCls" /> Deal Details
                         </div>
-                        <p>Total Code :<?php echo $totalRecords;?></p>
-                        <p>Active Listing :2342</p>
-                        <p>InActive Listing :7567</p>
-                        <div class="gotoPageDiv"><a href ="../console/errorCode.php" >Go to Page</a></div>
+                        <p>Total  Deal  <span  style="float: right;margin-right:10px;"><?php print_r( $dealDetails['totalRec']['totalRec']);?></span></p>
+                        <p>Pending Deal <span  style="float: right;margin-right:10px;"><?php print_r( $dealDetails['totalActiveRec']['totalActiveRec']);?></span></p>
+                        <p>Confirmed Deal <span  style="float: right;margin-right:10px;"><?php print_r( $dealDetails['totalInActiveRec']['totalInActiveRec']);?></span></p>
+                        <p>Today's Deal <span  style="float: right;margin-right:10px;"><?php print_r( $dealDetails['totalCreatedTodayRec']['totalCreatedTodayRec']);?></span></p>
+                 
+                        <div class="gotoPageDiv"><a href ="../console/userMgnt.php" >Go to Page</a></div>
                     </div>
-                    <div class="DetailDivCls">
-                        <div class="innerHeadDiv2">
-                        <img src="../console/img/banner.gif" class="imgCls" /> Raise Request Details
+                     <!-- Outgoing request Binding --->
+                     <div class="DetailDivCls">
+                        <div class="innerHeadDiv">
+                        <img src="../console/img/prod_req_outgoing.gif" class="imgCls" /> User Request Details
                         </div>
-                        <p>Total Request :10</p>
-                        <p>Active Request :5</p>
-                        <p>Today'sRequest :5</p>
-                        <div class="gotoPageDiv"><a href ="../console/banner.php" >Go to Page</a></div>
+                        <p>Total Outgoing Request  <span  style="float: right;margin-right:10px;"><?php print_r( $productReqDetails['totalRec']['totalRec']);?></span></p>
+                        <p>Open Request <span  style="float: right;margin-right:10px;"><?php print_r( $productReqDetails['totalActiveRec']['totalActiveRec']);?></span></p>
+                        <p>Closed Request <span  style="float: right;margin-right:10px;"><?php print_r( $productReqDetails['totalInActiveRec']['totalInActiveRec']);?></span></p>
+                        <p>Today's Request <span  style="float: right;margin-right:10px;"><?php print_r( $productReqDetails['totalCreatedTodayRec']['totalCreatedTodayRec']);?></span></p>
+                 
+                        <div class="gotoPageDiv"><a href ="../console/userMgnt.php" >Go to Page</a></div>
                     </div>
+                    <!-- Product request Binding --->
                     <div class="DetailDivCls">
-                        <div class="innerHeadDiv2">
-                        <img src="../console/img/computer.gif" class="imgCls" /> Deal Details
+                        <div class="innerHeadDiv">
+                        <img src="../console/img/Productrequest.gif" class="imgCls" /> Request Details
                         </div>
-                        <p>Total Deals :<?php echo $totalRecords;?></p>
-                        <p>In Progess  :2342</p>
-                        <p>Closed :7567</p>
-                        <p>Today's Deal :7567</p>
-                        <div class="gotoPageDiv"><a href ="../console/errorCode.php" >Go to Page</a></div>
+                        <p>Total Request  <span  style="float: right;margin-right:10px;"><?php print_r( $reqDetails['totalRec']['totalRec']);?></span></p>
+                        <p>Pending Request <span  style="float: right;margin-right:10px;"><?php print_r( $reqDetails['totalActiveRec']['totalActiveRec']);?></span></p>
+                        <p>Approved Request <span  style="float: right;margin-right:10px;"><?php print_r( $reqDetails['totalInActiveRec']['totalInActiveRec']);?></span></p>
+                        <p>Today's Request <span  style="float: right;margin-right:10px;"><?php print_r( $reqDetails['totalCreatedTodayRec']['totalCreatedTodayRec']);?></span></p>
+                 
+                        <div class="gotoPageDiv"><a href ="../console/userMgnt.php" >Go to Page</a></div>
                     </div>
-                    <div class="DetailDivCls">
-                        <div class="innerHeadDiv2">
-                        <img src="../console/img/computer.gif" class="imgCls" /> Product Request Details
-                        </div>
-                        <p>Total Request :<?php echo $totalRecords;?></p>
-                        <p>Accepted  :2342</p>
-                        <p>Pending :7567</p>
-                        <p>Rejected :7567</p>
-                        <div class="gotoPageDiv"><a href ="../console/errorCode.php" >Go to Page</a></div>
-                    </div>
+                   
+                   
                 </div>
         </div> 
         

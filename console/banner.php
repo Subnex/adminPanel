@@ -21,11 +21,16 @@
         use Aws\Exception\AwsException;
 
         require_once __DIR__ . '/Model/config.php';
-        $bucketName = $s3BucketName;
+       /* $bucketName = $s3BucketName;
         $region = $s3Region; // e.g., us-west-2
         $accessKey = $s3AccessKey;
         $secretKey = $s3SecretKey;
-        $folderName = $s3FolderName;
+        $folderName = $s3FolderName;*/
+        $bucketName = $_ENV['AWS_BUCKETNAME'];//$s3BucketName;
+        $region = $_ENV['AWS_REGION'];//$s3Region; // e.g., us-west-2
+        $accessKey = $_ENV['AWS_ACCESS_KEY_ID'];// $s3AccessKey;
+        $secretKey = $_ENV['AWS_SECRET_ACCESS_KEY'];//$s3SecretKey;
+        $folderName = $_ENV['AWS_BANNER'];//$s3SubCatFolderName;
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update'])) 
         {

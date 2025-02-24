@@ -53,13 +53,14 @@ private $ds;
     
      public function insertSubCategory($s3ClientObj,$bucketName,$imgUrl,$catId,$catCode)
      {
-         $subCatCode = random_int(100000, 999999);
+         $timestamp = time();
+         $subCatCode =   md5($timestamp);//random_int(100000, 999999);
          $subCatId = $subCatCode;
          $catName =$_POST["newCatName"];
          $newStatus = 0; 
-      
+         $createdById='afrdRp4gxGqMy2q6do2mH2rLBljpeABA4dMin';
 
-         if($_POST['newStatus'] ='Active')
+         if($_POST['newStatus'] =='Active')
          {
              $newStatus = 1;
          }
@@ -68,9 +69,9 @@ private $ds;
              $imgName =$_FILES['newCatfile']['tmp_name'];
              $imgPath =$imgUrl;
  
-             $query = "INSERT into sub_categories(id,sub_category_code,name,category_id,category_code,image_name,image_path,status,category_index)  VALUES (:subCatId,:subCatCode,:catName,:catId,:catCode,:imgName,:imgPath,:newStatus,:catIndex)";
+             $query = "INSERT into sub_categories(sub_category_code,name,category_id,category_code,image_name,image_path,status,category_index,created_by,updated_by)  VALUES (:subCatCode,:catName,:catId,:catCode,:imgName,:imgPath,:newStatus,:catIndex,:createdBy,:updatedBy)";
              $stmt = $PDOConnection->prepare($query);
-             $stmt->bindParam("subCatId",$subCatId);
+            // $stmt->bindParam("subCatId",$subCatId);
              $stmt->bindParam("subCatCode",$subCatCode);
              $stmt->bindParam("catId",$catId);
              $stmt->bindParam("catCode",$catCode);
@@ -79,6 +80,8 @@ private $ds;
              $stmt->bindParam("imgPath",$imgPath);
              $stmt->bindParam("newStatus",$newStatus);
              $stmt->bindParam("catIndex",$catIndex);
+             $stmt->bindParam("createdBy",$createdById);
+             $stmt->bindParam("updatedBy",$createdById);
  
              try{
                
@@ -112,7 +115,7 @@ private $ds;
         //$catId = $catCode;
         $subCatName =$_POST["editCatName"];
         $catStatus = 0; 
-        if($_POST['editStatus'] ='Active')
+        if($_POST['editStatus'] =='Active')
         {
             $catStatus = 1;
         }

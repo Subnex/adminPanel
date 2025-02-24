@@ -36,12 +36,13 @@ class categoryCls{
         //$catId = $catCode;
         $catName =$_POST["editCatName"];
         $catStatus = 0; 
-        if($_POST['newStatus'] ='Active')
+        if($_POST['editStatus'] =='Active')
         {
             $catStatus = 1;
         }
         $catIndex =$_POST["editIndex"];
         $PDOConnection = $this->ds->getAliveConnection();
+
         if($imgURL != null)
         {
             $imgName =$_FILES['editfile']['tmp_name'];
@@ -57,22 +58,23 @@ class categoryCls{
         }
         else
         {
-            $query = "UPDATE categories SET name = :catName, status=:catStatus,category_index = :catIndex  WHERE category_code = :catCode";
+            $query = "UPDATE categories SET name = :catName, status=:catStatus,category_index = :catIndex  WHERE id = :catCode";
             $stmt = $PDOConnection->prepare($query);
             $stmt->bindParam("catCode",$catCode);
             $stmt->bindParam("catName",$catName);
             $stmt->bindParam("catStatus",$catStatus);
             $stmt->bindParam("catIndex",$catIndex);
+
         }
         //$query = "INSERT into categories(id,category_code,name,image_name,image_path,status,category_index)  VALUES (:catId,:catCode,:catName,:imgName,:imgPath,:newStatus,:catIndex)";
        
-
+       
         try{
             $stmt->execute();
         }
         catch(PDOException $e)
         {
-            print_r($e->getMessage());
+            print_r(value: $e->getMessage());
         }
        
         $response = array(
@@ -87,14 +89,15 @@ class categoryCls{
      */
     public function insertCategory($s3ClientObj,$bucketName,$imgUrl)
     {
-        $catCode = random_int(100000, 999999);
+        $timestamp = time();
+        $catCode = md5($timestamp);//random_int(100000, 999999);
         $catId = $catCode;
         $catName =$_POST["newCatName"];
         $newStatus = 0; 
         $createdById='afrdRp4gxGqMy2q6do2mH2rLBljpeABA4dMin';
         $parentid=0;
-  
-        if($_POST['newStatus'] ='Active')
+        $createdTime = time();
+        if($_POST['newStatus'] =='Active')
         {
             $newStatus = 1;
         }
@@ -103,7 +106,7 @@ class categoryCls{
             $imgName =$_FILES['newCatfile']['tmp_name'];
             $imgPath =$imgUrl;
 
-            $query = "INSERT into categories(category_code,name,image_name,image_path,status,category_index,created_by,updated_by,parent_id)  VALUES (:catCode,:catName,:imgName,:imgPath,:newStatus,:catIndex,:createdBy,:updatedBy,:parentId)";
+            $query = "INSERT into categories(category_code,name,image_name,image_path,status,category_index,updated_at,created_by,updated_by,parent_id)  VALUES (:catCode,:catName,:imgName,:imgPath,:newStatus,:catIndex,:updatedAt,:createdBy,:updatedBy,:parentId)";
             $stmt = $PDOConnection->prepare($query);
             $stmt->bindParam("parentId",$parentid);
             $stmt->bindParam("catCode",$catCode);
@@ -112,8 +115,11 @@ class categoryCls{
             $stmt->bindParam("imgPath",$imgPath);
             $stmt->bindParam("newStatus",$newStatus);
             $stmt->bindParam("catIndex",$catIndex);
+            //$stmt->bindParam(param: "createdAt",$createdTime);
+            $stmt->bindParam("updatedAt",$createdTime);
             $stmt->bindParam("createdBy",$createdById);
             $stmt->bindParam("updatedBy",$createdById);
+
             
             try{
                 $stmt->execute();

@@ -12,7 +12,7 @@
           $categoryCls = new categoryCls();
           $search = '';
           //s3 configuration
-         // require '../vendor/autoload.php';
+         // require '../vendor/autoload.php'; 
   
           use Aws\S3\S3Client;
           use Aws\Exception\AwsException;
@@ -56,7 +56,7 @@
                         'ACL'    => 'public-read', // Make file publicly accessible
                     ]);
                     // File URL
-                    $url = $result['ObjectURL'];
+                    $url = $result['ObjectURL']; 
                 }
                 catch(AwsException $e)
                 {
@@ -186,7 +186,7 @@
                             </td>
                             <td class="txtAlignCenter"><?php  if($row['status'] == 1){echo "Active";}else{echo "InActive";} ?></td>
                             <td class="txtAlignCenter">
-                                <button onclick="editCategory('<?php echo addslashes($row['category_code']); ?>', '<?php echo $row['name']; ?>', '<?php echo addslashes($row['status']); ?>', '<?php echo addslashes($row['category_index']); ?>')"><img src="img/edit.png" height="20px" width="20px" title="Edit Details" /></button>
+                                <button onclick="editCategory('<?php echo addslashes($row['id']); ?>', '<?php echo $row['name']; ?>', '<?php echo addslashes($row['status']); ?>', '<?php echo addslashes($row['category_index']); ?>')"><img src="img/edit.png" height="20px" width="20px" title="Edit Details" /></button>
                                 <a href="categoryDetail.php?catCode=<?php echo $row['category_code']; ?>"><img src="img/subcategory.png" height="30px" width="30px" title="Manage Subcategory" /></a>
                             </td>
                         </tr>

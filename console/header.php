@@ -3,7 +3,7 @@
 session_start();
 if(isset($_SESSION["LAST_ACTIVE_TIME"])){
    
-    if((time() - $_SESSION["LAST_ACTIVE_TIME"]) >600){
+    if((time() - $_SESSION["LAST_ACTIVE_TIME"]) >20600){
         header('location:logout.php');
         die();
     }

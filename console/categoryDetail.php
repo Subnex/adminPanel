@@ -149,6 +149,8 @@
                 );
                 return $response;
             }
+            //header("Location: " . $_SERVER['PHP_SELF']);
+            exit(); // Make sure to call exit after the header to stop the script
           }  
           
           if ($catCode != null) {
@@ -207,7 +209,7 @@
                         <?php endwhile; ?>  
                     
                 </table>
-                <div><div class="SubCatHeaderLeft"> <h5>  Sub Category List</h5></div><div class="SubCatHeaderRight"> <button  type="submit" name="addbtn"   id="addbtn"   onclick="AddNewSubCategory('<?php echo addslashes($result[0]['category_code']); ?>', '<?php echo addslashes($result[0]['category_code']); ?>');return false;"> <img src="img/addNewItem.png" height="20px" width="20px" title="Add New Sub-Category" /></button><br/></div></div>
+                <div><div class="SubCatHeaderLeft"> <h5>  Sub Category List</h5></div><div class="SubCatHeaderRight"> <button  type="submit" name="addbtn"   id="addbtn"   onclick="AddNewSubCategory('<?php echo addslashes($result[0]['id']); ?>', '<?php echo addslashes($result[0]['category_code']); ?>');return false;"> <img src="img/addNewItem.png" height="20px" width="20px" title="Add New Sub-Category" /></button><br/></div></div>
                 <table>
                         <thead>
                                 <tr>
@@ -239,7 +241,7 @@
             </div>
             <div id="editForm" style="display:none;" class="editFormDiv overlay">
                 <div class="popup">
-                <div class="popupHeader"><h3>Add New Category</h3></div>
+                <div class="popupHeader"><h3>Update Sub Category</h3></div>
                         <form method="POST" action="" enctype="multipart/form-data">
                             <input type="hidden" name="editId" id="editId">
                             <label>Category Name:</label>
