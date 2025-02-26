@@ -67,7 +67,7 @@ session_start();
                         <p>InActive User <span  style="float: right;margin-right:10px;"><?php print_r( $userDetails['totalInActiveUser']['totalInActiveUser']);?></span></p>
                         <p>Today's Registered Users <span  style="float: right;margin-right:10px;"><?php print_r( $userDetails['totalRegUserToday']['totalRegUserToday']);?></span></p>
                  
-                        <div class="gotoPageDiv"><a href ="../console/userMgnt.php" >Go to Page</a></div>
+                        <div class="gotoPageDiv"><a href ="../console/account.php" >Go to Page</a></div>
                     </div>
                      <!-- Case Binding --->
                     <div class="DetailDivCls">

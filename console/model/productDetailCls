@@ -1,0 +1,84 @@
+<?php
+class ProductDetailCls {
+
+    private $DB;
+
+    public function __construct() {
+        require_once __DIR__ . '/../Model/DataSource.php';
+        $this->DB = new DataSource();
+    }
+
+    // Helper function to execute a query and fetch results
+    private function executeQuery($query, $params = []) {
+        try {
+            $PDOConnection = $this->DB->getAliveConnection();
+            $stmt = $PDOConnection->prepare($query);
+            $stmt->execute($params);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            // Handle error (log it, etc.)
+            return ['error' => $e->getMessage()];
+        }
+    }
+
+    // Main function to get product details
+    public function getProductsDetails($product_id) {
+        // Initialize the result array
+        $result = [];
+
+        // Fetch product details
+        $product_query = "SELECT * FROM products WHERE product_code = ?";
+        $product = $this->executeQuery($product_query, [$product_id]);
+
+        if ($product) {
+            $result['product'] = $product[0]; // Get the first (and likely only) product
+
+            // Fetch product images (use fetchAll if there are multiple images)
+            $product_image_query = "SELECT * FROM product_images WHERE product_code = ?";
+            $productImages = $this->executeQuery($product_image_query, [$product_id]);
+            $result['productImg'] = $productImages;
+           // print_r($result['productImg'] );
+            // Fetch pending requests
+            $pending_requests_query = "
+                SELECT r.id, u.username, p.name, r.request_status, r.created_at
+                FROM requests r
+                JOIN users u ON r.request_by = u.user_code
+                JOIN products p ON r.product_code = p.product_code
+                WHERE r.product_code = ? AND r.request_status = 0
+            ";
+            $result['pending_requests'] = $this->executeQuery($pending_requests_query, [$product_id]);
+
+            // Fetch approved requests
+            $approved_requests_query = "
+                SELECT r.id, u.username, p.name, r.request_status, r.created_at
+                FROM requests r
+                JOIN users u ON r.request_by = u.user_code
+                JOIN products p ON r.product_code = p.product_code
+                WHERE r.product_code = ? AND r.request_status = 1
+            ";
+            $result['approved_requests'] = $this->executeQuery($approved_requests_query, [$product_id]);
+
+            // Fetch related deals
+            $deals_query = "
+                SELECT o.id, o.order_no, o.order_type, o.rent_from_date as startDate, 
+                       o.rent_to_date as endDate, o.actual_price as actualPrice, 
+                       o.final_price as finalPrice, r.username as OpterName, 
+                       l.username as ListerName, rm.title as rentMode, p.name
+                FROM orders o
+                JOIN users r ON o.order_by_user_code = r.user_code
+                JOIN users l ON o.order_to_user_code = l.user_code
+                JOIN rent_mode rm ON o.rent_mode_code = rm.rent_mode_code
+                JOIN products p ON o.product_code = p.product_code
+                WHERE o.product_code = ?
+            ";
+            $result['deals'] = $this->executeQuery($deals_query, [$product_id]);
+
+        } else {
+            $result['error'] = 'Product not found.';
+        }
+
+        // Return the result array
+        return $result;
+    }
+}
+?>

@@ -81,7 +81,9 @@
             </div>
             <?php $index =0; $totalRecords = count($result);  while ($index < $totalRecords): $row = $result[$index] ; $index++?>
                 <div id="accoundDetailsData">
-                    <div class="txtAlignCenter colData1"><?php echo $row['user_publisher_id']; ?></div>
+                    <div class="txtAlignCenter colData1">
+                        <a href="../console/accountDetails.php?id=<?php echo $row['user_publisher_id']; ?>" ><?php echo $row['user_publisher_id']; ?></a>
+                    </div>
                     <div class=" colData2"><?php echo $row['username']; ?></div>
                     <div class="txtAlignCenter colData1"><?php echo $row['mobile']; ?></div>
                     <div class="txtAlignCenter colData1"><?php echo date("d-M-Y", strtotime($row['date_of_birth'])); ?></div>

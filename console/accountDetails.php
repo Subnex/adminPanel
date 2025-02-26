@@ -14,13 +14,13 @@
     session_set_cookie_params(0);
 
     include('./header.php');
-    require_once __DIR__ . '/Model/productDetailCls';
-     $prodDetails = new productDetailCls();
-    $productCode = isset($_GET['id']) ? $_GET['id'] : '';
-    $prodRec = $prodDetails->getProductsDetails($productCode);
-    //print_r($prodRec["productImg"][0]['image_path']);
+    require_once __DIR__ . '/Model/accountDetailsCls';
+    $accDetails = new accountDetailsCls();
+    $accId = isset($_GET['id']) ? $_GET['id'] : '';
+    $accRec = $accDetails->getAccountDetails($accId);
+    //print_r($accRec["productImg"][0]['image_path']);
     // Function to render a table
-    function renderTable($data, $columns, $headers, $link_column = 'id') {
+    function renderTable($data, $columns, $headers, $link_column = 'productCode') {
         if (!empty($data)) {
             echo '<table>';
             echo '<thead><tr>';
@@ -40,7 +40,7 @@
                     // Check if the column is the one that should be a link (e.g., id)
                     if ($column == $link_column) {
                         // Generate a link for the ID column
-                        echo '<td><a href="requestDetail.php?request_id=' . htmlspecialchars($row[$column]) . '">' . htmlspecialchars($row[$column]) . '</a></td>';
+                        echo '<td><a href="productDetails.php?id=' . htmlspecialchars($row[$column]) . '">' . htmlspecialchars($row[$column]) . '</a></td>';
                     } else {
                         // For other columns, just display the value
                         echo '<td>' . htmlspecialchars($row[$column]) . '</td>';
@@ -81,7 +81,7 @@
         }
         .DetailDivCls
         {
-            height: 155px;
+            height: 255px;
             width: 100%;
             background-color: #fff;
             border: 1px solid #f2eeee;
@@ -89,11 +89,13 @@
             margin-top: 10px;
             float: left;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow-y: auto; /* Enables vertical scrolling */
+            padding: 10px; /* Optional padding */
 
         }
         .innerHeadDiv2
         {
-            height: 35px;
+            height: 25px;
             width: 100%;
             /* background-color: #337ab7; */
             color: #1373ac;
@@ -106,13 +108,27 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            position: relative; /* Ensure proper positioning for sticky header */
         }
-        table, th, td {
-            border-bottom: 1px solid black;
-        }
-        th, td {
+
+        th {
+            background-color: #1373ac; /* Optional: Add background color to the header */
+            position: sticky;
+            top: 0; /* Keeps the header at the top of the table */
+            z-index: 1; /* Ensures the header is above the body when scrolling */
             padding: 8px;
             text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        thead {
+            background-color: #f9f9f9; /* Optional: Gives the header a background color */
         }
         .profile-container {
             display: flex;
@@ -154,58 +170,64 @@
 <body>
 
 <div class="profile-container">
-    <img src="<?php echo htmlspecialchars($prodRec["productImg"][0]['image_path']); ?>" alt="Product Image">
+    <img src="<?php echo htmlspecialchars($accRec["user"]['profile_image']); ?>" alt="User Image">
     <div class="profile-details">
         <div class="product-info">
             <div class="product-info-item">
-                <strong>Product Name:</strong> <?php echo htmlspecialchars($prodRec['product']['name']); ?>
+                <strong>User Name:</strong> <?php echo htmlspecialchars($accRec['user']['username']); ?>
             </div>
             <div class="product-info-item">
-                <strong>Price:</strong> <?php echo htmlspecialchars($prodRec['product']['list_price']); ?>
+                <strong>Email:</strong> <?php echo htmlspecialchars($accRec['user']['email']); ?>
             </div>
             <div class="product-info-item">
-                <strong>Status:</strong> <?php echo htmlspecialchars($prodRec['product']['status']); ?>
+                <strong>DOB:</strong> <?php echo htmlspecialchars($accRec['user']['date_of_birth']); ?>
             </div>
             <div class="product-info-item">
-                <strong>Description:</strong> <?php echo htmlspecialchars($prodRec['product']['description']); ?>
+                <strong>Mobile:</strong> <?php echo htmlspecialchars($accRec['user']['mobile']); ?>
             </div>
             <div class="product-info-item">
-                <strong>Category:</strong> <?php echo htmlspecialchars($prodRec['product']['category']); ?>
+                <strong>Gender:</strong> <?php echo htmlspecialchars($accRec['user']['gender']); ?>
             </div>
             <div class="product-info-item">
-                <strong>Available Stock:</strong> <?php echo htmlspecialchars($prodRec['product']['stock']); ?>
+                <strong>Status:</strong> <?php echo htmlspecialchars($accRec['user']['status']); ?>
             </div>
             <div class="product-info-item">
-                <strong>Rating:</strong> <?php echo htmlspecialchars($prodRec['product']['rating']); ?>
+                <strong>Rating:</strong> <?php echo htmlspecialchars($accRec['user']['rating']); ?>
             </div>
         </div>
     </div>
 </div>
 
 <div class="DetailDivCls">
-    <div class="innerHeadDiv2"><h4>Pending Requests</h4></div>
+    <div class="innerHeadDiv2"><h4>My Lising</h4></div>
     <?php
-    $pendingColumns = ['id', 'username', 'name', 'request_status', 'created_at'];
-    $pendingHeaders = ['Request ID', 'User Name', 'Product Name', 'Status', 'Request Date'];
-    renderTable($prodRec['pending_requests'], $pendingColumns, $pendingHeaders);
+    $pendingHeaders= ['Product Code', 'Name', 'Rental Amount', 'Late Charges', 'Status'];
+    $pendingColumns = ['productCode', 'pName', 'list_price', 'late_fee', 'product_status'];
+    renderTable($accRec['my_listing'], $pendingColumns, $pendingHeaders);
     ?>
 </div>
-
 <div class="DetailDivCls">
-    <div class="innerHeadDiv2"><h4>Approved Requests</h4></div>
-    <?php
-    $approvedColumns = ['id', 'username', 'name', 'request_status', 'created_at'];
-    $approvedHeaders = ['Request ID', 'User Name', 'Product Name', 'Status', 'Request Date'];
-    renderTable($prodRec['approved_requests'], $approvedColumns, $approvedHeaders);
-    ?>
-</div>
-
-<div class="DetailDivCls">
-    <div class="innerHeadDiv2"><h4>Deals Details</h4></div>
+    <div class="innerHeadDiv2"><h4>My Deals</h4></div>
     <?php
     $dealsColumns = ['order_no', 'OpterName', 'ListerName', 'order_type', 'rentMode', 'actualPrice', 'finalPrice', 'startDate', 'endDate'];
     $dealsHeaders = ['Order No.', 'Opter Name', 'Lister Name', 'Order Type', 'Rent Mode', 'Rental', 'Final Price', 'Deal Start Date', 'Deal End Date'];
-    renderTable($prodRec['deals'], $dealsColumns, $dealsHeaders);
+    renderTable($accRec['deals'], $dealsColumns, $dealsHeaders);
+    ?>
+</div>
+<div class="DetailDivCls">
+    <div class="innerHeadDiv2"><h4>My Requests</h4></div>
+    <?php
+    $approvedColumns = ['id', 'username', 'name', 'request_status', 'created_at'];
+    $approvedHeaders = ['Request ID', 'User Name', 'Product Name', 'Status', 'Request Date'];
+    renderTable($accRec['approved_requests'], $approvedColumns, $approvedHeaders);
+    ?>
+</div>
+<div class="DetailDivCls">
+    <div class="innerHeadDiv2"><h4>My Outgoing Request</h4></div>
+    <?php
+    $dealsColumns = ['order_no', 'OpterName', 'ListerName', 'order_type', 'rentMode', 'actualPrice', 'finalPrice', 'startDate', 'endDate'];
+    $dealsHeaders = ['Order No.', 'Opter Name', 'Lister Name', 'Order Type', 'Rent Mode', 'Rental', 'Final Price', 'Deal Start Date', 'Deal End Date'];
+    renderTable($accRec['deals'], $dealsColumns, $dealsHeaders);
     ?>
 </div>
 

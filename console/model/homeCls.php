@@ -1,487 +1,120 @@
 <?php
-class homeCls{
+class HomeCls
+{
+    private $DB;
 
-    private $DB; 
-    public function __construct(){
-        //echo "loading2---";
+    public function __construct()
+    {
         require_once __DIR__ . '/../Model/DataSource.php';
-        //echo "loading3---";
-        $this->DB= new DataSource();
+        $this->DB = new DataSource();
     }
 
+    // Helper function to execute a count query
+    private function executeCountQuery($query)
+    {
+        $PDOConnection = $this->DB->getAliveConnection();
+        $stmt = $PDOConnection->prepare($query);
+        try {
+            $stmt->execute();
+            if ($stmt->rowCount() > 0) {
+                $result = $stmt->fetchAll();
+                return $result[0]['record_count'];
+            }
+        } catch (PDOException $e) {
+            print_r($e->getMessage());
+        }
+        return 0;
+    }
+
+    // Function to get all user stats
     public function getAllAccount()
     {
-       
-        $PDOConnection = $this->DB->getAliveConnection();
-        $userDetails =[];
-        $query = "SELECT COUNT(*) AS record_count FROM users";
-        $stmt1 = $PDOConnection->prepare($query);
-        try{
-            $stmt1->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt1->rowCount() > 0) {
-            $accRec1 = $stmt1->fetchAll();
-            $userDetails["totalUser"]=['totalUser' =>  $accRec1[0]['record_count']];
-        }
-        $query = "SELECT COUNT(*) AS record_count FROM users where status =1";
-        $stmt2 = $PDOConnection->prepare($query);
-        try{
-            $stmt2->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt2->rowCount() > 0) {
-            $accRec2 = $stmt2->fetchAll();
-            $userDetails["totalActiveUser"]=['totalActiveUser' =>  $accRec2[0]['record_count']];
-        }
-        $query = "SELECT COUNT(*) AS record_count FROM users where status =0";
-        $stmt3 = $PDOConnection->prepare($query);
-        try{
-            $stmt3->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt3->rowCount() > 0) {
-            $accRec3 = $stmt3->fetchAll();
-            $userDetails["totalInActiveUser"]=['totalInActiveUser' =>  $accRec3[0]['record_count']];
-        }
-        $query = "SELECT COUNT(*) AS record_count FROM users where DATE(created_at) = CURDATE()";
-        $stmt4 = $PDOConnection->prepare($query);
-        try{
-            $stmt4->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt4->rowCount() > 0) {
-            $accRec4 = $stmt4->fetchAll();
-            $userDetails["totalRegUserToday"]=['totalRegUserToday' =>  $accRec3[0]['record_count']];
-        }
-       // print_r($accRec);
+        $userDetails = [
+            "totalUser" => ['totalUser' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM users")],
+            "totalActiveUser" => ['totalActiveUser' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM users WHERE status = 1")],
+            "totalInActiveUser" => ['totalInActiveUser' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM users WHERE status = 0")],
+            "totalRegUserToday" => ['totalRegUserToday' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM users WHERE DATE(created_at) = CURDATE()")],
+        ];
+
         return $userDetails;
     }
 
+    // Function to fetch product details
     public function FetchProductDetails()
     {
-      // echo "feching product details";
-        $PDOConnection = $this->DB->getAliveConnection();
-        $queryTotalCount = "SELECT COUNT(*) AS record_count FROM products";
-        $productDetails =[];
-        $stmt1 = $PDOConnection->prepare($queryTotalCount);
-        try{
-            $stmt1->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt1->rowCount() > 0) {
-            $accRec1 = $stmt1->fetchAll();
-            $productDetails["totalRec"]=['totalRec' =>  $accRec1[0]['record_count']];
-        }
-        //print_r($accRec[0]['record_count'])  ;
-       // print_r($productDetails)  ;
+        $productDetails = [
+            "totalRec" => ['totalRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM products")],
+            "totalActiveRec" => ['totalActiveRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM products WHERE product_status = 0")],
+            "totalInActiveRec" => ['totalInActiveRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM products WHERE product_status = 1")],
+            "totalCreatedTodayRec" => ['totalCreatedTodayRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM products WHERE DATE(created_at) = CURDATE()")],
+        ];
 
-        $queryTotalActiveCount = "SELECT COUNT(*) AS record_count FROM products where product_status = 0";
-        
-        $stmt2 = $PDOConnection->prepare($queryTotalActiveCount);
-        try{
-            $stmt2->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt2->rowCount() > 0) {
-            $accRec2 = $stmt2->fetchAll();
-            $productDetails["totalActiveRec"]=['totalActiveRec' => $accRec2[0]['record_count']];
-        }
-
-        $queryTotalInActiveCount = "SELECT COUNT(*) AS record_count FROM products where product_status = 1";
-        
-        $stmt3 = $PDOConnection->prepare($queryTotalInActiveCount);
-        try{
-            $stmt3->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt3->rowCount() > 0) {
-            $accRec3 = $stmt3->fetchAll();
-            $productDetails["totalInActiveRec"]=['totalInActiveRec' => $accRec3[0]['record_count']];
-        }
-
-        $queryTotalActiveCount = "SELECT COUNT(*) AS record_count FROM products where DATE(created_at) = CURDATE()";
-        
-        $stmt4 = $PDOConnection->prepare($queryTotalActiveCount);
-        try{
-            $stmt4->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt4->rowCount() > 0) {
-            $accRec4 = $stmt4->fetchAll();
-            $productDetails["totalCreatedTodayRec"]=['totalCreatedTodayRec' => $accRec4[0]['record_count']];
-        }
-       // print_r($accRec);
         return $productDetails;
     }
-    
+
+    // Function to fetch category details
     public function FetchCategoryDetails()
     {
-      // echo "feching product details";
-        $PDOConnection = $this->DB->getAliveConnection();
-        $queryTotalCount = "SELECT COUNT(*) AS record_count FROM categories";
-        $categoryDetails =[];
-        $stmt1 = $PDOConnection->prepare($queryTotalCount);
-        try{
-            $stmt1->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt1->rowCount() > 0) {
-            $accRec1 = $stmt1->fetchAll();
-            $categoryDetails["totalRec"]=['totalRec' =>  $accRec1[0]['record_count']];
-        }
-        //print_r($accRec[0]['record_count'])  ;
-       // print_r($productDetails)  ;
+        $categoryDetails = [
+            "totalRec" => ['totalRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM categories")],
+            "totalActiveRec" => ['totalActiveRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM categories WHERE status = 1")],
+            "totalInActiveRec" => ['totalInActiveRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM categories WHERE status = 0")],
+            "totalCreatedTodayRec" => ['totalCreatedTodayRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM categories WHERE DATE(created_at) = CURDATE()")],
+        ];
 
-        $queryTotalActiveCount = "SELECT COUNT(*) AS record_count FROM categories where status = 1";
-        
-        $stmt2 = $PDOConnection->prepare($queryTotalActiveCount);
-        try{
-            $stmt2->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt2->rowCount() > 0) {
-            $accRec2 = $stmt2->fetchAll();
-            $categoryDetails["totalActiveRec"]=['totalActiveRec' => $accRec2[0]['record_count']];
-        }
-
-        $queryTotalInActiveCount = "SELECT COUNT(*) AS record_count FROM categories where status = 0";
-        
-        $stmt3 = $PDOConnection->prepare($queryTotalInActiveCount);
-        try{
-            $stmt3->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt3->rowCount() > 0) {
-            $accRec3 = $stmt3->fetchAll();
-            $categoryDetails["totalInActiveRec"]=['totalInActiveRec' => $accRec3[0]['record_count']];
-        }
-
-        $queryTotalActiveCount = "SELECT COUNT(*) AS record_count FROM categories where DATE(created_at) = CURDATE()";
-        
-        $stmt4 = $PDOConnection->prepare($queryTotalActiveCount);
-        try{
-            $stmt4->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt4->rowCount() > 0) {
-            $accRec4 = $stmt4->fetchAll();
-            $categoryDetails["totalCreatedTodayRec"]=['totalCreatedTodayRec' => $accRec4[0]['record_count']];
-        }
-       // print_r($accRec);
         return $categoryDetails;
     }
-    
+
+    // Function to fetch case details
     public function FetchCaseDetails()
     {
-      // echo "feching product details";
-        $PDOConnection = $this->DB->getAliveConnection();
-        $queryTotalCount = "SELECT COUNT(*) AS record_count FROM support_cases";
-        $caseDetails =[];
-        $stmt1 = $PDOConnection->prepare($queryTotalCount);
-        try{
-            $stmt1->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt1->rowCount() > 0) {
-            $accRec1 = $stmt1->fetchAll();
-            $caseDetails["totalRec"]=['totalRec' =>  $accRec1[0]['record_count']];
-        }
-        //print_r($accRec[0]['record_count'])  ;
-       // print_r($productDetails)  ;
+        $caseDetails = [
+            "totalRec" => ['totalRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM support_cases")],
+            "totalActiveRec" => ['totalActiveRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM support_cases WHERE status = 0")],
+            "totalInActiveRec" => ['totalInActiveRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM support_cases WHERE status = 1")],
+            "totalCreatedTodayRec" => ['totalCreatedTodayRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM support_cases WHERE DATE(create_time) = CURDATE()")],
+        ];
 
-        $queryTotalActiveCount = "SELECT COUNT(*) AS record_count FROM support_cases where status = 0";
-        
-        $stmt2 = $PDOConnection->prepare($queryTotalActiveCount);
-        try{
-            $stmt2->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt2->rowCount() > 0) {
-            $accRec2 = $stmt2->fetchAll();
-            $caseDetails["totalActiveRec"]=['totalActiveRec' => $accRec2[0]['record_count']];
-        }
-
-        $queryTotalInActiveCount = "SELECT COUNT(*) AS record_count FROM support_cases where status = 1";
-        
-        $stmt3 = $PDOConnection->prepare($queryTotalInActiveCount);
-        try{
-            $stmt3->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt3->rowCount() > 0) {
-            $accRec3 = $stmt3->fetchAll();
-            $caseDetails["totalInActiveRec"]=['totalInActiveRec' => $accRec3[0]['record_count']];
-        }
-
-        $queryTotalActiveCount = "SELECT COUNT(*) AS record_count FROM support_cases where DATE(create_time) = CURDATE()";
-        
-        $stmt4 = $PDOConnection->prepare($queryTotalActiveCount);
-        try{
-            $stmt4->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt4->rowCount() > 0) {
-            $accRec4 = $stmt4->fetchAll();
-            $caseDetails["totalCreatedTodayRec"]=['totalCreatedTodayRec' => $accRec4[0]['record_count']];
-        }
-       // print_r($accRec);
         return $caseDetails;
     }
+
+    // Function to fetch outgoing request details
     public function FetchOutGoingRequestDetails()
     {
-      // echo "feching product request details";
-        $PDOConnection = $this->DB->getAliveConnection();
-        $queryTotalCount = "SELECT COUNT(*) AS record_count FROM product_request";
-        $productReqDetails =[];
-        $stmt1 = $PDOConnection->prepare($queryTotalCount);
-        try{
-            $stmt1->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt1->rowCount() > 0) {
-            $accRec1 = $stmt1->fetchAll();
-            $productReqDetails["totalRec"]=['totalRec' =>  $accRec1[0]['record_count']];
-        }
-        //print_r($accRec[0]['record_count'])  ;
-       // print_r($productDetails)  ;
+        $productReqDetails = [
+            "totalRec" => ['totalRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM product_request")],
+            "totalActiveRec" => ['totalActiveRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM product_request WHERE status = 0")],
+            "totalInActiveRec" => ['totalInActiveRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM product_request WHERE status = 1")],
+            "totalCreatedTodayRec" => ['totalCreatedTodayRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM product_request WHERE DATE(created_at) = CURDATE()")],
+        ];
 
-        $queryTotalActiveCount = "SELECT COUNT(*) AS record_count FROM product_request where status = 0";
-        
-        $stmt2 = $PDOConnection->prepare($queryTotalActiveCount);
-        try{
-            $stmt2->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt2->rowCount() > 0) {
-            $accRec2 = $stmt2->fetchAll();
-            $productReqDetails["totalActiveRec"]=['totalActiveRec' => $accRec2[0]['record_count']];
-        }
-
-        $queryTotalInActiveCount = "SELECT COUNT(*) AS record_count FROM product_request where status = 1";
-        
-        $stmt3 = $PDOConnection->prepare($queryTotalInActiveCount);
-        try{
-            $stmt3->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt3->rowCount() > 0) {
-            $accRec3 = $stmt3->fetchAll();
-            $productReqDetails["totalInActiveRec"]=['totalInActiveRec' => $accRec3[0]['record_count']];
-        }
-
-        $queryTotalActiveCount = "SELECT COUNT(*) AS record_count FROM product_request where DATE(created_at) = CURDATE()";
-        
-        $stmt4 = $PDOConnection->prepare($queryTotalActiveCount);
-        try{
-            $stmt4->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt4->rowCount() > 0) {
-            $accRec4 = $stmt4->fetchAll();
-            $productReqDetails["totalCreatedTodayRec"]=['totalCreatedTodayRec' => $accRec4[0]['record_count']];
-        }
-       // print_r($accRec);
         return $productReqDetails;
     }
 
+    // Function to fetch deal details
     public function FetchDealDetails()
     {
-      // echo "feching product request details";
-        $PDOConnection = $this->DB->getAliveConnection();
-        $queryTotalCount = "SELECT COUNT(*) AS record_count FROM book_deal";
-        $dealDetails =[];
-        $stmt1 = $PDOConnection->prepare($queryTotalCount);
-        try{
-            $stmt1->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt1->rowCount() > 0) {
-            $accRec1 = $stmt1->fetchAll();
-            $dealDetails["totalRec"]=['totalRec' =>  $accRec1[0]['record_count']];
-        }
-        //print_r($accRec[0]['record_count'])  ;
-       // print_r($productDetails)  ;
+        $dealDetails = [
+            "totalRec" => ['totalRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM book_deal")],
+            "totalActiveRec" => ['totalActiveRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM book_deal WHERE opter_deal_status = 0")],
+            "totalInActiveRec" => ['totalInActiveRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM orders")],
+            "totalCreatedTodayRec" => ['totalCreatedTodayRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM book_deal WHERE DATE(created_at) = CURDATE()")],
+        ];
 
-        $queryTotalActiveCount = "SELECT COUNT(*) AS record_count FROM book_deal where opter_deal_status = 0";
-        
-        $stmt2 = $PDOConnection->prepare($queryTotalActiveCount);
-        try{
-            $stmt2->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt2->rowCount() > 0) {
-            $accRec2 = $stmt2->fetchAll();
-            $dealDetails["totalActiveRec"]=['totalActiveRec' => $accRec2[0]['record_count']];
-        }
-
-        $queryTotalInActiveCount = "SELECT COUNT(*) AS record_count FROM orders";
-        
-        $stmt3 = $PDOConnection->prepare($queryTotalInActiveCount);
-        try{
-            $stmt3->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt3->rowCount() > 0) {
-            $accRec3 = $stmt3->fetchAll();
-            $dealDetails["totalInActiveRec"]=['totalInActiveRec' => $accRec3[0]['record_count']];
-        }
-
-        $queryTotalActiveCount = "SELECT COUNT(*) AS record_count FROM book_deal where DATE(created_at) = CURDATE()";
-        
-        $stmt4 = $PDOConnection->prepare($queryTotalActiveCount);
-        try{
-            $stmt4->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt4->rowCount() > 0) {
-            $accRec4 = $stmt4->fetchAll();
-            $dealDetails["totalCreatedTodayRec"]=['totalCreatedTodayRec' => $accRec4[0]['record_count']];
-        }
-       // print_r($accRec);
         return $dealDetails;
     }
 
+    // Function to fetch request details
     public function FetchReqDetails()
     {
-      // echo "feching product request details";
-        $PDOConnection = $this->DB->getAliveConnection();
-        $queryTotalCount = "SELECT COUNT(*) AS record_count FROM requests";
-        $reqDetails =[];
-        $stmt1 = $PDOConnection->prepare($queryTotalCount);
-        try{
-            $stmt1->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt1->rowCount() > 0) {
-            $accRec1 = $stmt1->fetchAll();
-            $reqDetails["totalRec"]=['totalRec' =>  $accRec1[0]['record_count']];
-        }
-        //print_r($accRec[0]['record_count'])  ;
-       // print_r($productDetails)  ;
+        $reqDetails = [
+            "totalRec" => ['totalRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM requests")],
+            "totalActiveRec" => ['totalActiveRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM requests WHERE request_status = 0")],
+            "totalInActiveRec" => ['totalInActiveRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM requests WHERE request_status = 1")],
+            "totalCreatedTodayRec" => ['totalCreatedTodayRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM requests WHERE DATE(created_at) = CURDATE()")],
+        ];
 
-        $queryTotalActiveCount = "SELECT COUNT(*) AS record_count FROM requests where request_status = 0";
-        
-        $stmt2 = $PDOConnection->prepare($queryTotalActiveCount);
-        try{
-            $stmt2->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt2->rowCount() > 0) {
-            $accRec2 = $stmt2->fetchAll();
-            $reqDetails["totalActiveRec"]=['totalActiveRec' => $accRec2[0]['record_count']];
-        }
-
-        $queryTotalInActiveCount = "SELECT COUNT(*) AS record_count FROM requests where request_status = 1";
-        
-        $stmt3 = $PDOConnection->prepare($queryTotalInActiveCount);
-        try{
-            $stmt3->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt3->rowCount() > 0) {
-            $accRec3 = $stmt3->fetchAll();
-            $reqDetails["totalInActiveRec"]=['totalInActiveRec' => $accRec3[0]['record_count']];
-        }
-
-        $queryTotalActiveCount = "SELECT COUNT(*) AS record_count FROM requests where DATE(created_at) = CURDATE()";
-        
-        $stmt4 = $PDOConnection->prepare($queryTotalActiveCount);
-        try{
-            $stmt4->execute();
-        }
-        catch(PDOException $e)
-        {
-            print_r($e->getMessage());
-        }
-        if ($stmt4->rowCount() > 0) {
-            $accRec4 = $stmt4->fetchAll();
-            $reqDetails["totalCreatedTodayRec"]=['totalCreatedTodayRec' => $accRec4[0]['record_count']];
-        }
-       // print_r($accRec);
         return $reqDetails;
     }
-
 }
 ?>

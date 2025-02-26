@@ -77,7 +77,7 @@
               
                 <?php foreach($result as $row) {?>
                     <div id="accoundDetailsData">
-                            <Div class="txtAlignCenter colData1"><a href="../console/productDetails.php?id=<?php echo $row['product_ref_code']; ?>" ><?php echo $row['product_ref_code']; ?></a></Div>
+                            <Div class="txtAlignCenter colData1"><a href="../console/productDetails.php?id=<?php echo $row['product_code']; ?>" ><?php echo $row['product_ref_code']; ?></a></Div>
                             <Div class="colData2"><?php echo $row['name']; ?></Div>
                             <Div class="colData1" ><?php echo  $row['category_name']; ?></Div> 
                             <Div class="txtAlignCenter colData1"><?php echo $row['sub_category_name']; ?></Div>
