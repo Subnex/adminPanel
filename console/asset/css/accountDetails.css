@@ -1,0 +1,102 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.product-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+.product-card h4 {
+    margin: 10px 0;
+}
+.DetailDivCls
+{
+    height: 255px;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #f2eeee;
+    border-radius: 5px;
+    margin-top: 10px;
+    float: left;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow-y: auto; /* Enables vertical scrolling */
+    padding: 10px; /* Optional padding */
+
+}
+.innerHeadDiv2
+{
+    height: 25px;
+    width: 100%;
+    /* background-color: #337ab7; */
+    color: #1373ac;
+    padding-left: 1%;
+    font-size: 22px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom: 1px solid orange; 
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    position: relative; /* Ensure proper positioning for sticky header */
+}
+
+th {
+    background-color: #1373ac; /* Optional: Add background color to the header */
+    position: sticky;
+    top: 0; /* Keeps the header at the top of the table */
+    z-index: 1; /* Ensures the header is above the body when scrolling */
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+thead {
+    background-color: #f9f9f9; /* Optional: Gives the header a background color */
+}
+.profile-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-container img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.profile-details {
+    flex: 1;
+}
+
+.product-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Creates two columns */
+    gap: 20px; /* Adds space between columns */
+}
+
+.product-info-item {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.product-info-item strong {
+    color: #1373ac; /* Makes the labels stand out */
+}

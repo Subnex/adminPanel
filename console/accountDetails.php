@@ -1,59 +1,55 @@
 <?php
+session_start();
 
-    session_start();
-    $uid='';
-    if (!isset($_SESSION["username"]))
-    {
-        $url = "./Home.php";
-        header("Location: $url");
+function checkSession() {
+    if (!isset($_SESSION["username"])) {
+        header("Location: ./Home.php");
+        exit;
     }
-    if (isset($_GET['uid'])) {
-        $uid = $_GET['uid'];
-        //echo "catCode=: " . htmlspecialchars($catCode);
-    }
-    session_set_cookie_params(0);
+}
 
-    include('./header.php');
-    require_once __DIR__ . '/Model/accountDetailsCls';
-    $accDetails = new accountDetailsCls();
-    $accId = isset($_GET['id']) ? $_GET['id'] : '';
-    $accRec = $accDetails->getAccountDetails($accId);
-    //print_r($accRec["productImg"][0]['image_path']);
-    // Function to render a table
-    function renderTable($data, $columns, $headers, $link_column = 'productCode') {
-        if (!empty($data)) {
-            echo '<table>';
-            echo '<thead><tr>';
-            
-            // Loop through the headers and display them
-            foreach ($headers as $header) {
-                echo '<th>' . htmlspecialchars($header) . '</th>';
+checkSession();  // Ensure the user is logged in
+
+$uid = $_GET['uid'] ?? ''; // Use null coalescing operator
+
+session_set_cookie_params(0);  // This could be redundant unless there's a specific reason for it.
+
+include('./header.php');
+require_once __DIR__ . '/Model/accountDetailsCls.php';
+
+$accDetails = new accountDetailsCls();
+$accId = $_GET['id'] ?? '';  // Get account ID or set to empty if not set
+$accRec = $accDetails->getAccountDetails($accId);
+
+// General function to render tables
+function renderTable($data, $columns, $headers, $link_column = 'productRefCode', $id_field = 'productCode') {
+    if (empty($data)) {
+        echo '<p>No data found.</p>';
+        return;
+    }
+
+    echo '<table>';
+    echo '<thead><tr>';
+    foreach ($headers as $header) {
+        echo '<th>' . htmlspecialchars($header) . '</th>';
+    }
+    echo '</tr></thead><tbody>';
+
+    foreach ($data as $row) {
+        echo '<tr>';
+        foreach ($columns as $column) {
+            if ($column == $link_column) {
+                $goToId = ($link_column == 'productRefCode') ? $row[$id_field] : $row[$column];
+                echo '<td><a href="productDetails.php?id=' . htmlspecialchars($goToId) . '">' . htmlspecialchars($row[$column]) . '</a></td>';
+            } else {
+                echo '<td>' . htmlspecialchars($row[$column]) . '</td>';
             }
-            echo '</tr></thead><tbody>';
-            
-            // Loop through the data and display each row
-            foreach ($data as $row) {
-                echo '<tr>';
-                
-                // Loop through each column and display the data
-                foreach ($columns as $column) {
-                    // Check if the column is the one that should be a link (e.g., id)
-                    if ($column == $link_column) {
-                        // Generate a link for the ID column
-                        echo '<td><a href="productDetails.php?id=' . htmlspecialchars($row[$column]) . '">' . htmlspecialchars($row[$column]) . '</a></td>';
-                    } else {
-                        // For other columns, just display the value
-                        echo '<td>' . htmlspecialchars($row[$column]) . '</td>';
-                    }
-                }
-                echo '</tr>';
-            }
-            echo '</tbody></table>';
-        } else {
-            echo '<p>No data found.</p>';
         }
+        echo '</tr>';
     }
-    
+    echo '</tbody></table>';
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -61,111 +57,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../console/asset/css/accountDetails.css" type="text/css" rel="stylesheet" />
+    <link href="../console/asset/css/searchBar.css" type="text/css" rel="stylesheet" />
+    <script src="../console/vendor/jquery/jquery-3.3.1.js" type="text/javascript"></script>
     <title>User Profile</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f9f9f9;
-        }
-        
-        .product-card img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 10px;
-        }
-        .product-card h4 {
-            margin: 10px 0;
-        }
-        .DetailDivCls
-        {
-            height: 255px;
-            width: 100%;
-            background-color: #fff;
-            border: 1px solid #f2eeee;
-            border-radius: 5px;
-            margin-top: 10px;
-            float: left;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            overflow-y: auto; /* Enables vertical scrolling */
-            padding: 10px; /* Optional padding */
-
-        }
-        .innerHeadDiv2
-        {
-            height: 25px;
-            width: 100%;
-            /* background-color: #337ab7; */
-            color: #1373ac;
-            padding-left: 1%;
-            font-size: 22px;
-            border-top-left-radius: 3px;
-            border-top-right-radius: 3px;
-            border-bottom: 1px solid orange; 
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            position: relative; /* Ensure proper positioning for sticky header */
-        }
-
-        th {
-            background-color: #1373ac; /* Optional: Add background color to the header */
-            position: sticky;
-            top: 0; /* Keeps the header at the top of the table */
-            z-index: 1; /* Ensures the header is above the body when scrolling */
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        thead {
-            background-color: #f9f9f9; /* Optional: Gives the header a background color */
-        }
-        .profile-container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .profile-container img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            margin-right: 20px;
-        }
-
-        .profile-details {
-            flex: 1;
-        }
-
-        .product-info {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Creates two columns */
-            gap: 20px; /* Adds space between columns */
-        }
-
-        .product-info-item {
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        .product-info-item strong {
-            color: #1373ac; /* Makes the labels stand out */
-        }
-    </style>
 </head>
 <body>
 
@@ -199,35 +94,38 @@
 </div>
 
 <div class="DetailDivCls">
-    <div class="innerHeadDiv2"><h4>My Lising</h4></div>
+    <div class="innerHeadDiv2"><h4>My Listing</h4></div>
     <?php
-    $pendingHeaders= ['Product Code', 'Name', 'Rental Amount', 'Late Charges', 'Status'];
-    $pendingColumns = ['productCode', 'pName', 'list_price', 'late_fee', 'product_status'];
+    $pendingHeaders = ['Product Code', 'Name', 'Rental Amount', 'Late Charges', 'Status'];
+    $pendingColumns = ['productRefCode', 'pName', 'list_price', 'late_fee', 'product_status'];
     renderTable($accRec['my_listing'], $pendingColumns, $pendingHeaders);
     ?>
 </div>
+
 <div class="DetailDivCls">
     <div class="innerHeadDiv2"><h4>My Deals</h4></div>
     <?php
-    $dealsColumns = ['order_no', 'OpterName', 'ListerName', 'order_type', 'rentMode', 'actualPrice', 'finalPrice', 'startDate', 'endDate'];
-    $dealsHeaders = ['Order No.', 'Opter Name', 'Lister Name', 'Order Type', 'Rent Mode', 'Rental', 'Final Price', 'Deal Start Date', 'Deal End Date'];
-    renderTable($accRec['deals'], $dealsColumns, $dealsHeaders);
+    $dealsColumns = ['order_no', 'productName', 'listerName', 'opterName', 'order_type', 'rentMode', 'actulaPrice', 'finalPrice', 'startDate', 'endDate'];
+    $dealsHeaders = ['Order no.', 'Product name', 'Lister Name', 'Opter Name', 'Order Type', 'Rent Mode', 'Rental', 'Final Price', 'Deal Start Date', 'Deal End Date'];
+    renderTable($accRec['myDeals'], $dealsColumns, $dealsHeaders, 'order_no', 'order_code');
     ?>
 </div>
+
 <div class="DetailDivCls">
     <div class="innerHeadDiv2"><h4>My Requests</h4></div>
     <?php
-    $approvedColumns = ['id', 'username', 'name', 'request_status', 'created_at'];
-    $approvedHeaders = ['Request ID', 'User Name', 'Product Name', 'Status', 'Request Date'];
-    renderTable($accRec['approved_requests'], $approvedColumns, $approvedHeaders);
+    $approvedColumns = ['reqId', 'productName', 'productOwner', 'reqStatus', 'reqDate'];
+    $approvedHeaders = ['Request ID', 'Product Name', 'Product Owner', 'Status', 'Request Date'];
+    renderTable($accRec['request'], $approvedColumns, $approvedHeaders, 'reqId', 'request_code');
     ?>
 </div>
+
 <div class="DetailDivCls">
     <div class="innerHeadDiv2"><h4>My Outgoing Request</h4></div>
     <?php
-    $dealsColumns = ['order_no', 'OpterName', 'ListerName', 'order_type', 'rentMode', 'actualPrice', 'finalPrice', 'startDate', 'endDate'];
-    $dealsHeaders = ['Order No.', 'Opter Name', 'Lister Name', 'Order Type', 'Rent Mode', 'Rental', 'Final Price', 'Deal Start Date', 'Deal End Date'];
-    renderTable($accRec['deals'], $dealsColumns, $dealsHeaders);
+    $outgoingColumns = ['reqId', 'description', 'duration', 'category', 'subCategory', 'rental', 'reqStatus', 'startDate', 'endDate'];
+    $outgoingHeaders = ['Id', 'Description', 'Duration', 'Category', 'Sub Category', 'Rental', 'Status', 'Deal Start Date', 'Deal End Date'];
+    renderTable($accRec['OutGoingRequest'], $outgoingColumns, $outgoingHeaders, 'reqId');
     ?>
 </div>
 

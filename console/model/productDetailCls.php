@@ -1,7 +1,7 @@
 <?php
-class accountDetailsCls {
+class ProductDetailCls {
 
-    private $DB;
+    private $DB; 
 
     public function __construct() {
         require_once __DIR__ . '/../Model/DataSource.php';
@@ -22,23 +22,31 @@ class accountDetailsCls {
     }
 
     // Main function to get product details
-    public function getAccountDetails($acc_id) {
+    public function getProductsDetails($product_id) {
         // Initialize the result array
         $result = [];
 
         // Fetch product details
-        $product_query = "SELECT * FROM users WHERE user_publisher_id = ?";
-        $accRec = $this->executeQuery($product_query, [$acc_id]);
+        $product_query = "SELECT * FROM products WHERE product_code = ?";
+        $product = $this->executeQuery($product_query, [$product_id]);
 
-        if ($accRec) {
-            $result['user'] = $accRec[0]; // Get the first (and likely only) product
- 
-            // Fetch my lising requests
-            $listing_requests_query = "
-                SELECT id,p.product_code as productCode,p.product_ref_code as productRefCode,p.product_ref_code as refCode,p.name as pName,p.list_price,p.late_fee,p.product_status
-                FROM products p where p.user_publisher_id =?";
+        if ($product) {
+            $result['product'] = $product[0]; // Get the first (and likely only) product
 
-            $result['my_listing'] = $this->executeQuery($listing_requests_query, [$acc_id]);
+            // Fetch product images (use fetchAll if there are multiple images)
+            $product_image_query = "SELECT * FROM product_images WHERE product_code = ?";
+            $productImages = $this->executeQuery($product_image_query, [$product_id]);
+            $result['productImg'] = $productImages;
+           // print_r($result['productImg'] );
+            // Fetch pending requests
+            $pending_requests_query = "
+                SELECT r.id, u.username, p.name, r.request_status, r.created_at
+                FROM requests r
+                JOIN users u ON r.request_by = u.user_code
+                JOIN products p ON r.product_code = p.product_code
+                WHERE r.product_code = ? AND r.request_status = 0
+            ";
+            $result['pending_requests'] = $this->executeQuery($pending_requests_query, [$product_id]);
 
             // Fetch approved requests
             $approved_requests_query = "
@@ -48,7 +56,7 @@ class accountDetailsCls {
                 JOIN products p ON r.product_code = p.product_code
                 WHERE r.product_code = ? AND r.request_status = 1
             ";
-            $result['approved_requests'] = $this->executeQuery($approved_requests_query, [$acc_id]);
+            $result['approved_requests'] = $this->executeQuery($approved_requests_query, [$product_id]);
 
             // Fetch related deals
             $deals_query = "
@@ -63,7 +71,7 @@ class accountDetailsCls {
                 JOIN products p ON o.product_code = p.product_code
                 WHERE o.product_code = ?
             ";
-            $result['deals'] = $this->executeQuery($deals_query, [$acc_id]);
+            $result['deals'] = $this->executeQuery($deals_query, [$product_id]);
 
         } else {
             $result['error'] = 'Product not found.';

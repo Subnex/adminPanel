@@ -14,7 +14,7 @@
     session_set_cookie_params(0);
 
     include('./header.php');
-    require_once __DIR__ . '/Model/productDetailCls';
+    require_once __DIR__ . '/Model/productDetailCls.php';
      $prodDetails = new productDetailCls();
     $productCode = isset($_GET['id']) ? $_GET['id'] : '';
     $prodRec = $prodDetails->getProductsDetails($productCode);
@@ -41,9 +41,15 @@
                     if ($column == $link_column) {
                         // Generate a link for the ID column
                         echo '<td><a href="requestDetail.php?request_id=' . htmlspecialchars($row[$column]) . '">' . htmlspecialchars($row[$column]) . '</a></td>';
-                    } else {
-                        // For other columns, just display the value
-                        echo '<td>' . htmlspecialchars($row[$column]) . '</td>';
+                    } else{
+                        // For date fields, convert to dd-mm-yyyy format
+                        if (strpos($column, 'date') !== false || strpos($column, 'created_at') !== false || strpos($column, 'startDate') !== false || strpos($column, 'endDate') !== false) {
+                            // Assuming the date is in the format Y-m-d H:i:s, adjust if necessary
+                            echo '<td>' . formatDate($row[$column]) . '</td>';
+                        } else {
+                            // For other columns, just display the value
+                            echo '<td>' . htmlspecialchars($row[$column]) . '</td>';
+                        }
                     }
                 }
                 echo '</tr>';
@@ -53,6 +59,19 @@
             echo '<p>No data found.</p>';
         }
     }
+    // Function to format the date into dd-mm-yyyy format
+function formatDate($date) {
+    if (empty($date)) return '';
+
+    // If the date is valid, format it
+    try {
+        $datetime = new DateTime($date);
+        return $datetime->format('d-m-Y');
+    } catch (Exception $e) {
+        // If date is invalid, return original value or empty
+        return $date;
+    }
+}
     
 ?>
 
@@ -81,7 +100,8 @@
         }
         .DetailDivCls
         {
-            height: 155px;
+            min-height: 150px;
+            max-height: 350px;
             width: 100%;
             background-color: #fff;
             border: 1px solid #f2eeee;
@@ -89,6 +109,7 @@
             margin-top: 10px;
             float: left;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: auto;
 
         }
         .innerHeadDiv2

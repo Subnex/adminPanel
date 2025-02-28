@@ -1,6 +1,7 @@
 <?php
+
 class DataSource
-{   
+{
     private $conn;
 
     function __construct()
@@ -8,81 +9,57 @@ class DataSource
         $this->conn = $this->getAliveConnection();
     }
 
-   
     /**
-     * If you wish to use PDO use this function to get a connection instance
+     * Get a persistent PDO connection
      *
      * @return \PDO
      */
     public function getAliveConnection()
     {
-        if($this->conn == null)
-        {
+        if ($this->conn === null) {
             $this->conn = $this->getPdoConnection();
         }
-
         return $this->conn;
     }
+
     /**
-     * If you wish to use PDO use this function to get a connection instance
+     * Establishes and returns a PDO connection.
      *
      * @return \PDO
      */
-    public function getPdoConnection()
+    private function getPdoConnection()
     {
-        
         require_once __DIR__ . '/config.php';
-        $conn = FALSE;
-        $host = $rdsHost ;// Replace with your RDS endpoint
-        $dbname = $rdsDatabase; // Replace with your database name
-        $db_user = $rdsUsername;// Replace with your RDS username
-        $db_pass = $rdsPassword; // Replace with your RDS password
-        $port = $rdsPort;
-       // echo "=inside pdo connection1==".$port;
-        try {
 
-            $dsn = "mysql:host=$host;dbname=$dbname;port=$port;charset=utf8mb4";
-            $pdo = new PDO($dsn, $db_user, $db_pass);
+        try {
+            $dsn = "mysql:host=$rdsHost;dbname=$rdsDatabase;port=$rdsPort;charset=utf8mb4";
+            $pdo = new PDO($dsn, $rdsUsername, $rdsPassword);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (Exception $e) {
-            
-            exit("PDO Connect Error: " . $e->getMessage());
+            exit("PDO Connection Error: " . $e->getMessage());
         }
+
         return $pdo;
     }
 
     /**
-     * To get database results
+     * Executes a SELECT query and returns the result as an array.
      *
      * @param string $query
      * @param string $paramType
      * @param array $paramArray
      * @return array
      */
-    public function select($query, $paramType = "", $paramArray = array())
+    public function select($query, $paramType = "", $paramArray = [])
     {
-        $stmt = $this->conn->prepare($query);
-        if (! empty($paramType) && ! empty($paramArray)) {
+        $stmt = $this->prepareAndExecute($query, $paramType, $paramArray);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            $this->bindQueryParams($stmt, $paramType, $paramArray);
-        }
-        //print_r($stmt);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_all()) {
-               // print_r($row);
-                $resultset[] = $row;
-            }
-        }
-
-        if (! empty($resultset)) {
-            return $resultset;
-        }
+        return $result ?: [];
     }
 
     /**
-     * To insert
+     * Executes an INSERT query and returns the inserted record's ID.
      *
      * @param string $query
      * @param string $paramType
@@ -91,80 +68,82 @@ class DataSource
      */
     public function insert($query, $paramType, $paramArray)
     {
-       
-        $stmt = $this->conn->prepare($query);
-        $this->bindQueryParams($stmt, $paramType, $paramArray);
-
-        $stmt->execute();
-        $insertId = $stmt->insert_id;
-        return $insertId;
-    }
-    public function Update($query)
-    {
-       
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        $insertId = $stmt->insert_id;
-        return $insertId;
+        $stmt = $this->prepareAndExecute($query, $paramType, $paramArray);
+        return $this->conn->lastInsertId();
     }
 
     /**
-     * To execute query
+     * Executes an UPDATE query and returns the last inserted ID.
+     *
+     * @param string $query
+     * @return int
+     */
+    public function update($query)
+    {
+        $stmt = $this->prepareAndExecute($query);
+        return $this->conn->lastInsertId();
+    }
+
+    /**
+     * Executes a general query (INSERT, UPDATE, DELETE).
      *
      * @param string $query
      * @param string $paramType
      * @param array $paramArray
      */
-    public function execute($query, $paramType = "", $paramArray = array())
+    public function execute($query, $paramType = "", $paramArray = [])
     {
-        $stmt = $this->conn->prepare($query);
-
-        if (! empty($paramType) && ! empty($paramArray)) {
-            $this->bindQueryParams($stmt, $paramType, $paramArray);
-        }
-        $stmt->execute();
+        $this->prepareAndExecute($query, $paramType, $paramArray);
     }
 
     /**
-     * 1.
-     * Prepares parameter binding
-     * 2. Bind prameters to the sql statement
-     *
-     * @param string $stmt
-     * @param string $paramType
-     * @param array $paramArray
-     */
-    public function bindQueryParams($stmt, $paramType, $paramArray = array())
-    {
-        $paramValueReference[] = & $paramType;
-        for ($i = 0; $i < count($paramArray); $i ++) {
-            $paramValueReference[] = & $paramArray[$i];
-        }
-        call_user_func_array(array(
-            $stmt,
-            'bind_param'
-        ), $paramValueReference);
-    }
-
-    /**
-     * To get database results
+     * Prepares and executes the given SQL query with parameters.
      *
      * @param string $query
      * @param string $paramType
      * @param array $paramArray
-     * @return array
+     * @return PDOStatement
      */
-    public function getRecordCount($query, $paramType = "", $paramArray = array())
+    private function prepareAndExecute($query, $paramType = "", $paramArray = [])
     {
         $stmt = $this->conn->prepare($query);
-        if (! empty($paramType) && ! empty($paramArray)) {
 
+        if (!empty($paramType) && !empty($paramArray)) {
             $this->bindQueryParams($stmt, $paramType, $paramArray);
         }
+
         $stmt->execute();
+        return $stmt;
+    }
+
+    /**
+     * Binds parameters to the prepared statement.
+     *
+     * @param PDOStatement $stmt
+     * @param string $paramType
+     * @param array $paramArray
+     */
+    private function bindQueryParams($stmt, $paramType, $paramArray = [])
+    {
+        $params = array_merge([$paramType], $paramArray);
+        $refParams = array_map(function (&$param) {
+            return $param;
+        }, $params);
+        call_user_func_array([$stmt, 'bind_param'], $refParams);
+    }
+
+    /**
+     * Retrieves the number of records that match the query.
+     *
+     * @param string $query
+     * @param string $paramType
+     * @param array $paramArray
+     * @return int
+     */
+    public function getRecordCount($query, $paramType = "", $paramArray = [])
+    {
+        $stmt = $this->prepareAndExecute($query, $paramType, $paramArray);
         $stmt->store_result();
-        $recordCount = $stmt->num_rows;
-
-        return $recordCount;
+        return $stmt->num_rows;
     }
 }
