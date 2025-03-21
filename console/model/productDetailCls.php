@@ -27,7 +27,17 @@ class ProductDetailCls {
         $result = [];
 
         // Fetch product details
-        $product_query = "SELECT * FROM products WHERE product_code = ?";
+        $product_query = "SELECT p.id,p.name as pname,p.list_price as listPrice,p.description as pDesc,c.name  as pCategory,sc.name as psubCategory,
+        CASE 
+                    WHEN p.product_status = 0 THEN 'Active'
+                    WHEN p.product_status = 1 THEN 'Inactive'
+                    ELSE 'Unknown'
+                END AS product_status
+        
+         FROM products p
+         JOIN categories c on c.category_code =p.category_code
+         JOIN sub_categories sc on sc.sub_category_code = p.sub_category_code
+          WHERE product_code =?";
         $product = $this->executeQuery($product_query, [$product_id]);
 
         if ($product) {
@@ -40,7 +50,9 @@ class ProductDetailCls {
            // print_r($result['productImg'] );
             // Fetch pending requests
             $pending_requests_query = "
-                SELECT r.id, u.username, p.name, r.request_status, r.created_at
+                SELECT r.id, u.username, p.name, 
+                r.request_status, 
+                r.created_at
                 FROM requests r
                 JOIN users u ON r.request_by = u.user_code
                 JOIN products p ON r.product_code = p.product_code
@@ -72,6 +84,28 @@ class ProductDetailCls {
                 WHERE o.product_code = ?
             ";
             $result['deals'] = $this->executeQuery($deals_query, [$product_id]);
+
+             // Fetch Reported Details 
+             $deals_query = "SELECT 
+                pr.id AS id, 
+                pr.product_name AS productName,
+                p.product_code as productCode,
+                p.product_ref_code as producRefCode,
+                DATE_FORMAT(pr.report_date, '%d-%m-%Y') AS reportDate, 
+                pr.reason AS reason, 
+                pr.status AS status, 
+                us.username AS reporterName, 
+                ut.username AS productOwnerName
+                FROM 
+                    product_report pr
+                JOIN 
+                    users us ON us.user_code = pr.reporter_name  -- Join users table for reporter
+                JOIN 
+                    users ut ON ut.user_code = pr.product_owner_name  -- Join users table for product owner
+                JOIN products p On p.id = pr.id
+                WHERE 
+                 p.product_code =? ";
+         $result['reportedRec'] = $this->executeQuery($deals_query, [$product_id]);
 
         } else {
             $result['error'] = 'Product not found.';

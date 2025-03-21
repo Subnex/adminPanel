@@ -94,7 +94,7 @@ class categoryCls{
         $catId = $catCode;
         $catName =$_POST["newCatName"];
         $newStatus = 0; 
-        $createdById='afrdRp4gxGqMy2q6do2mH2rLBljpeABA4dMin';
+        $createdById= $_SESSION["userCode"];//'afrdRp4gxGqMy2q6do2mH2rLBljpeABA4dMin';
         $parentid=0;
         $createdTime = time();
         if($_POST['newStatus'] =='Active')

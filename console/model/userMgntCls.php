@@ -88,6 +88,8 @@ class UserMgntCls
         //$DB = new DataSource();
        
         $conn = $this->ds->getAliveConnection();
+        $timestamp = time();
+        $randomHashCode = md5($timestamp);
         $username = $_POST['newUserName'];
         $email = $_POST['newEmail'];
         $pwd = $_POST['newPwd'];
@@ -98,8 +100,8 @@ class UserMgntCls
             $superUser = 1;
         }
         $userMobile = $_POST['newUserMobile'];
-        $userId = random_int(100000, 999999);
-        $adminCode =$userId;
+        //$userId = random_int(100000, 999999);
+        $adminCode =$randomHashCode;
         //$userId = random_int(100, 9999);
 
         $status = 0; 

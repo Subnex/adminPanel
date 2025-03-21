@@ -63,6 +63,7 @@ class Member
             session_start();
             $_SESSION["username"] = $memberRecord["username"];
             $_SESSION["superAdmin"]= false;
+            $_SESSION["userCode"]= $memberRecord["admin_code"];;
             $_SESSION["LAST_ACTIVE_TIME"]= time();
             if($memberRecord["super_admin"] ==1)
             {
@@ -76,6 +77,31 @@ class Member
         }
         return false;
 
+    }
+    public function sendResetPasswordEmail($email) {
+        // Check if the email exists in the database
+        // Example: using PDO to query the database
+        $PDOConnection = $this->ds->getAliveConnection();
+        $stmt = $PDOConnection->prepare("SELECT * FROM users WHERE email = ?");
+        $stmt->execute([$email]);
+        $user = $stmt->fetch();
+
+        if ($user) {
+            // Generate a password reset token and save it in the database
+            $resetToken = bin2hex(random_bytes(16)); // Generate a random reset token
+            $PDOConnection->prepare("UPDATE users SET reset_token = ? WHERE email = ?")
+                     ->execute([$resetToken, $email]);
+
+            // Send email with the reset link
+            $resetLink = "https://yourdomain.com/reset-password.php?token=" . $resetToken;
+            $subject = "Password Reset Request";
+            $message = "Click the following link to reset your password: " . $resetLink;
+            mail($email, $subject, $message); // You can use a more robust mailer like PHPMailer if necessary
+
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 

@@ -15,7 +15,7 @@
 
     include('./header.php');
     require_once __DIR__ . '/Model/productDetailCls.php';
-     $prodDetails = new productDetailCls();
+    $prodDetails = new productDetailCls();
     $productCode = isset($_GET['id']) ? $_GET['id'] : '';
     $prodRec = $prodDetails->getProductsDetails($productCode);
     //print_r($prodRec["productImg"][0]['image_path']);
@@ -80,7 +80,7 @@ function formatDate($date) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
+    <title>Product Details</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -170,6 +170,42 @@ function formatDate($date) {
         .product-info-item strong {
             color: #1373ac; /* Makes the labels stand out */
         }
+        .productDetailSection
+            {
+            margin-top:1%;
+            WIDTH: 100%;
+            max-height: 590px; /* Set the maximum height for the table */
+            overflow-y: auto; /* Enable vertical scroll */
+            }
+        .col1
+        {
+            top: 0;
+            background-color: #387192;
+            text-align: left;
+            padding: 8px;
+            text-align: center;
+            float: left;
+            font-weight: 500;
+           
+            border-right: 1px solid white;
+            color: #fff;
+        }
+        .colData1
+        {
+            top: 0;
+            text-align: left;
+            padding: 8px;
+            float: left;
+            font-weight: 500;
+           
+            border-right: 1px solid white;
+            border-bottom: 1px solid rgb(119, 167, 235);
+            min-height: 40px;
+        }
+        .colwidth
+        {
+            width: 20%;
+        }
     </style>
 </head>
 <body>
@@ -179,22 +215,22 @@ function formatDate($date) {
     <div class="profile-details">
         <div class="product-info">
             <div class="product-info-item">
-                <strong>Product Name:</strong> <?php echo htmlspecialchars($prodRec['product']['name']); ?>
+                <strong>Product Name:</strong> <?php echo htmlspecialchars($prodRec['product']['pname']); ?>
             </div>
             <div class="product-info-item">
-                <strong>Price:</strong> <?php echo htmlspecialchars($prodRec['product']['list_price']); ?>
+                <strong>Price:</strong> <?php echo htmlspecialchars($prodRec['product']['listPrice']); ?>
             </div>
             <div class="product-info-item">
-                <strong>Status:</strong> <?php echo htmlspecialchars($prodRec['product']['status']); ?>
+                <strong>Status:</strong> <?php echo htmlspecialchars($prodRec['product']['product_status']); ?>
             </div>
             <div class="product-info-item">
-                <strong>Description:</strong> <?php echo htmlspecialchars($prodRec['product']['description']); ?>
+                <strong>Description:</strong> <?php echo htmlspecialchars($prodRec['product']['pDesc']); ?>
             </div>
             <div class="product-info-item">
-                <strong>Category:</strong> <?php echo htmlspecialchars($prodRec['product']['category']); ?>
+                <strong>Category:</strong> <?php echo htmlspecialchars($prodRec['product']['pCategory']); ?>
             </div>
             <div class="product-info-item">
-                <strong>Available Stock:</strong> <?php echo htmlspecialchars($prodRec['product']['stock']); ?>
+                <strong>Sub Category:</strong> <?php echo htmlspecialchars($prodRec['product']['psubCategory']); ?>
             </div>
             <div class="product-info-item">
                 <strong>Rating:</strong> <?php echo htmlspecialchars($prodRec['product']['rating']); ?>
@@ -228,6 +264,29 @@ function formatDate($date) {
     $dealsHeaders = ['Order No.', 'Opter Name', 'Lister Name', 'Order Type', 'Rent Mode', 'Rental', 'Final Price', 'Deal Start Date', 'Deal End Date'];
     renderTable($prodRec['deals'], $dealsColumns, $dealsHeaders);
     ?>
+</div>
+<div class="DetailDivCls">
+    <div class="innerHeadDiv2"><h4>Report Details</h4></div>
+    <div class ="productDetailSection">
+                <div id="accoundDetailsHeader">
+                    <div class="col1 colwidth">Report ID</div>
+                    <div class="col1 colwidth">Reporter Name</div>
+                    <div class="col1 colwidth">Reason</div>
+                    <div class="col1 colwidth">Date</div>
+                    <div class="col1 colwidth">Status</div>
+                </div>
+                <?php foreach($prodRec['reportedRec'] as $row) {?>
+                    <div id="accoundDetailsData">
+                            <Div class="colData1 colwidth"><a href="../console/reportedProductDetails.php?id=<?php echo $row['id']; ?>" ><?php echo $row['id']; ?></Div>
+                            <Div class="colData1 colwidth"><?php echo $row['reporterName']; ?></Div>
+                            <Div class="colData1 colwidth" ><?php echo  $row['reason']; ?></Div> 
+                            <Div class="txtAlignCenter colData1 colwidth"><?php echo $row['reportDate']; ?></Div>
+                            <Div class="txtAlignCenter colData1 colwidth" ><?php echo $row['status']; ?></Div>
+                           
+                    </div>  
+                    <?php }; ?> 
+              
+            </div>
 </div>
 
 </body>

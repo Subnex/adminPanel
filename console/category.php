@@ -1,149 +1,145 @@
-
 <?php
-        session_start();
-        if (!isset($_SESSION["username"])){
-            $url = "./Home.php";
-            header("Location: $url");
-          }
-          session_set_cookie_params(0);
-       
-          include('./header.php');
-          require_once __DIR__ . '/Model/categoryCls.php';
-          $categoryCls = new categoryCls();
-          $search = '';
-          //s3 configuration
-         // require '../vendor/autoload.php'; 
-  
-          use Aws\S3\S3Client;
-          use Aws\Exception\AwsException;
+session_start();
+if (!isset($_SESSION["username"])) {
+    $url = "./Home.php";
+    header("Location: $url");
+    exit();
+}
 
-        require_once __DIR__ . '/Model/config.php';
-        $bucketName = $_ENV['AWS_BUCKETNAME'];//$s3BucketName;
-        $region = $_ENV['AWS_REGION'];//$s3Region; // e.g., us-west-2
-        $accessKey = $_ENV['AWS_ACCESS_KEY_ID'];// $s3AccessKey;
-        $secretKey = $_ENV['AWS_SECRET_ACCESS_KEY'];//$s3SecretKey;
-        $folderName = $_ENV['AWS_CATEGORY'];//$s3SubCatFolderName;
+session_set_cookie_params(0);
+
+include('./header.php');
+require_once __DIR__ . '/Model/categoryCls.php'; 
+$categoryCls = new categoryCls();
+$search = '';
+
+// S3 configuration
+use Aws\S3\S3Client;
+use Aws\Exception\AwsException;
+
+require_once __DIR__ . '/Model/config.php';
+$bucketName = $_ENV['AWS_BUCKETNAME'];
+$region = $_ENV['AWS_REGION'];
+$accessKey = $_ENV['AWS_ACCESS_KEY_ID'];
+$secretKey = $_ENV['AWS_SECRET_ACCESS_KEY'];
+$folderName = $_ENV['AWS_CATEGORY'];
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update'])) {
+    if (isset($_FILES['editfile']) && $_FILES['editfile']['error'] == 0) {
+        $s3Client = new S3Client([
+            'region'  => $region,
+            'version' => 'latest',
+            'credentials' => [
+                'key'    => $accessKey,
+                'secret' => $secretKey,
+            ]
+        ]);
         
-         // $DB = new DataSource();
-          //$conn = $DB->getAliveConnection();
-          if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update'])) 
-          {
-            if (isset($_FILES['editfile']) && $_FILES['editfile']['error'] == 0) 
-            {
-                $s3Client = new S3Client([
-                    'region'  => $region,
-                    'version' => 'latest',
-                    'credentials' => [
-                        'key'    => $accessKey,
-                        'secret' => $secretKey,
-                    ]
-                ]);
-                $file = $_FILES['editfile'];
+        $file = $_FILES['editfile'];
 
-                $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-                if (!in_array($file['type'], $allowedTypes)) {
-                    die("Error: Only JPEG, PNG, and GIF files are allowed.");
-                }
-                // Generate a unique name for the file
-                $key = $folderName . uniqid() . '-' . basename($file['editfile']);
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        if (!in_array($file['type'], $allowedTypes)) {
+            die("Error: Only JPEG, PNG, and GIF files are allowed.");
+        }
 
-                // Upload the file to S3
-                try{
-                        $result = $s3Client->putObject([
-                        'Bucket' => $bucketName,
-                        'Key'    => $key,
-                        'SourceFile' => $file['tmp_name'],
-                        'ACL'    => 'public-read', // Make file publicly accessible
-                    ]);
-                    // File URL
-                    $url = $result['ObjectURL']; 
-                }
-                catch(AwsException $e)
-                {
-                    echo "Error uploading file: " . $e->getMessage();
-                }
-            } else {
-                echo "Error: " . $_FILES['newCatfile']['error'];
-            }
-            $imgUrl = $url;
+        // Generate a unique name for the file
+        $key =$folderName  . basename($file['name']);  // Corrected file name reference
 
-            $res= $categoryCls->updateCategory($imgUrl);
-            $msg=$res['message'];
-            echo "<script type='text/javascript'>alert('$msg');</script>";
-            $result = $categoryCls->getCategory($search);
-               
-               
+        // Upload the file to S3
+        try {
+            $result = $s3Client->putObject([
+                'Bucket' => $bucketName,
+                'Key'    => $key,
+                'SourceFile' => $file['tmp_name'],  // Path to the temporary file
+                'ACL'    => 'public-read',  // Make the file publicly accessible
+            ]);
             
-    
-          }  
-          if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['InsertNewCat'])) {
-                
-                if (isset($_FILES['newCatfile'])) 
-                {
-                    $s3Client = new S3Client([
-                        'region'  => $region,
-                        'version' => 'latest',
-                        'credentials' => [
-                            'key'    => $accessKey,
-                            'secret' => $secretKey,
-                        ]
-                    ]);
-                    $file = $_FILES['newCatfile'];
- 
-                    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-                    if (!in_array($file['type'], $allowedTypes)) {
-                        die("Error: Only JPEG, PNG, and GIF files are allowed.");
-                    }
-                    // Generate a unique name for the file
-                    $key = $folderName  . uniqid() . '-' . basename($file['newCatfile']);
+            // Get the file URL
+            $url = $result['ObjectURL'];
+        } catch (AwsException $e) {
+            echo "Error uploading file: " . $e->getMessage();
+            exit;
+        }
+    } else {
+        echo "Error: " . $_FILES['editfile']['error'];
+        exit;
+    }
 
-                    // Upload the file to S3
-                    try{
-                            $result = $s3Client->putObject([
-                            'Bucket' => $bucketName,
-                            'Key'    => $key,
-                            'SourceFile' => $file['tmp_name'],
-                            'ACL'    => 'public-read', // Make file publicly accessible
-                        ]);
-                        // File URL
-                        $url = $result['ObjectURL'];
-                    }
-                    catch(AwsException $e)
-                    {
-                        echo "Error uploading file: " . $e->getMessage();
-                    }
-            } else {
-                echo "Error: " . $_FILES['newCatfile']['error'];
-            }
-            $imgUrl = $url;
+    // Now update the category with the new URL
+    $imgUrl = $url;
+    $res = $categoryCls->updateCategory($imgUrl);
+    $msg = $res['message'];
+    echo "<script type='text/javascript'>alert('$msg');</script>";
+    $result = $categoryCls->getCategory($search);
+}
 
-            if($imgUrl != null)
-             {   
-                $res= $categoryCls->insertCategory($S3ConfigObj,$bucketName,$imgUrl);
-                $msg=$res['message'];
-                echo "<script type='text/javascript'>alert('$msg');</script>";
-                $result = $categoryCls->getCategory($search);
-            }
-            else
-            {
-                $response = array(
-                    "status" => "fail",
-                    "message" => "S3 Uploading Error."
-                );
-                return $response;
-            }
-          }  
-          if (isset($_GET['search'])) {
-              $search = $_GET['search'];
-              $result = $categoryCls->getCategory($search);
-      
-          }
-          else
-          {
-              $result = $categoryCls->getCategory($search);
-          }
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['InsertNewCat'])) {
+    if (isset($_FILES['newCatfile'])) {
+        $s3Client = new S3Client([
+            'region'  => $region,
+            'version' => 'latest',
+            'credentials' => [
+                'key'    => $accessKey,
+                'secret' => $secretKey,
+            ]
+        ]);
 
-   ?>
+        $file = $_FILES['newCatfile'];
+
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        if (!in_array($file['type'], $allowedTypes)) {
+            die("Error: Only JPEG, PNG, and GIF files are allowed.");
+        }
+
+        // Generate a unique name for the file
+        $key = $folderName  . basename($file['name']);  // Corrected file name reference
+
+        // Upload the file to S3
+        try {
+            $result = $s3Client->putObject([
+                'Bucket' => $bucketName,
+                'Key'    => $key,
+                'SourceFile' => $file['tmp_name'],
+                'ACL'    => 'public-read',
+            ]);
+            
+            // Get the file URL
+            $url = $result['ObjectURL'];
+        } catch (AwsException $e) {
+            echo "Error uploading file: " . $e->getMessage();
+            exit;
+        }
+    } else {
+        echo "Error: " . $_FILES['newCatfile']['error'];
+        exit;
+    }
+
+    // Now insert the category with the new URL
+    $imgUrl = $url;
+    if ($imgUrl != null) {
+        $res = $categoryCls->insertCategory($S3ConfigObj, $bucketName, $imgUrl);
+        $msg = $res['message'];
+        echo "<script type='text/javascript'>alert('$msg');</script>";
+        $result = $categoryCls->getCategory($search);
+    } else {
+        $response = array(
+            "status" => "fail",
+            "message" => "S3 Uploading Error."
+        );
+        return $response;
+    }
+}
+
+// Additional logic for search handling
+if (isset($_GET['search'])) {
+    $search = $_GET['search'];
+    $result = $categoryCls->getCategory($search);
+} else {
+    $result = $categoryCls->getCategory($search);
+}
+
+?>
+
 </html>
 <head>
 <link href="../console/asset/css/searchBar.css" type="text/css" rel="stylesheet" />

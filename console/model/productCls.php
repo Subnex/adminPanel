@@ -120,14 +120,34 @@ class ProductCls{
      */
     public function updateproductDetails()
     {
+        //print_r($_POST['editRentalMode']);
         $conn = $this->ds->getAliveConnection();
-       
+            // Query the rent_mode table
+            $query = "SELECT id, rent_mode_code,title FROM rent_mode";
+
+            // Prepare and execute the query
+            $stmt = $conn->prepare($query);
+            $stmt->execute();
+
+            // Fetch all the rows from the query result
+            $rentModeArray = array();
+
+            // Bind the data to the array with id as key and code as value
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $rentModeArray[$row['title']] = $row['rent_mode_code'];
+            }
+            //print_r($rentModeArray);
+      
+       //echo "pass from here==";
+      
         $Id = $_POST['editId'];
         $productname = $_POST['editProductname'];
         $status = $_POST['status'];
         //$editCategory = $_POST['editCategory'];
         $editPrice = $_POST['editRentalPrice'];
-        $editrentalMode = $_POST['editrentalMode'];
+       // print_r($_POST['editRentalMode']);
+        $editrentalMode = $rentModeArray[$_POST['editRentalMode']];
+        //print_r($editrentalMode);
         $status = 0;
         //$productname ='Havells hair dryer';
         if($_POST['editStatus'] =='Active')
@@ -136,7 +156,7 @@ class ProductCls{
         }
    
         //$sql = "UPDATE SupportCase SET Name='$name', Status='$status', Message='$msg',Subject='$subject', Email ='$email' WHERE CaseId='$Id'";
-        $sql = "UPDATE products SET name=:prodName,list_price=:prodPrice, status = :prodStatus WHERE product_code = :prodCode";
+        $sql = "UPDATE products SET name=:prodName,list_price=:prodPrice, status = :prodStatus,rent_mode_code=:rentCode WHERE product_code = :prodCode";
 
         $stmt = $conn->prepare($sql);
     
@@ -144,7 +164,8 @@ class ProductCls{
         $stmt->bindParam(':prodCode', var: $Id);
         $stmt->bindParam(':prodStatus', $status);  
         $stmt->bindParam(':prodPrice', $editPrice);  
-        $stmt->bindParam(':prodName', $productname);  
+        $stmt->bindParam(':prodName', $productname); 
+        $stmt->bindParam(':rentCode', var: $editrentalMode); 
               
         $response ="";
         // Execute the query

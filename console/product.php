@@ -25,9 +25,8 @@
             $result = $productCls->getAllProducts($search);
     
         }  
-        
-        
-        if (isset($_GET['search'])) {
+
+         if (isset($_GET['search'])) {
             $search = $_GET['search'];
             $result = $productCls->getAllProducts($search);
     
@@ -57,6 +56,7 @@
                     <div class="topBarInner">Product Name :
                     <input type="text" class="SearchText" name="search" value="<?php echo htmlspecialchars($search); ?>" >
                     <button class="searchButton" type="submit" name="search-btn" >Search</button>
+                    <button class="searchButton" type="submit" name="search-flag-btn" >Get All Reported Product</button>
                     <!--<button class="searchButton" type="submit" name="search-flag-btn">Fetch All</button>
                     <button  class="searchButton" name="addNew" onclick="AddNewBanner();return false;">Add New</button> -->
                 </form>
@@ -105,7 +105,13 @@
                             <label>Sub-Category:</label>
                             <input type="text" readonly="true" name="editSubCategory" id="editSubCategory" required><br/><br/>
                             <label>Rental Mode:</label>
-                            <input type="text" name="editRentalMode" id="editRentalMode" required><br/><br/>
+                            <select id="editRentalMode" name="editRentalMode">
+                                <option value="Hourly">Hourly</option>
+                                <option value="Daily">Daily</option>
+                                <option value="Weekly">Weekly</option>
+                                <option value="Monthly">Monthly</option>
+                            </select>
+                            <!--<input type="text" name="editRentalMode" id="editRentalMode" required>--><br/><br/>
                             <label>Rental price:</label>
                             <input type="text" name="editRentalPrice" id="editRentalPrice" required><br/><br/>
                             <label>Status:</label>
@@ -123,21 +129,44 @@
                 <script>
                     function editProduct(id, productname, category,subCategory,rentalMode,price,status) {
                         var selectedStatusIndex=1;
-                       // alert(status);
+                        var rentModeIndex=0;
+                        //alert(rentalMode);
                         if(status == 'Active')
                         {
                             selectedStatusIndex=0;
                         }
+                        if(rentalMode == '' || rentalMode== 'Hourly')
+                        {
+                            rentModeIndex=0;
+                        }
+                        else if(rentalMode== 'Daily')
+                        {
+                            rentModeIndex=1;
+                        }
+                        else if(rentalMode== 'Weekly')
+                        {
+                            rentModeIndex=2;
+                        }
+                        else if(rentalMode== 'Monthly')
+                        {
+                            rentModeIndex=3;
+                        }
+                       
                         document.getElementById('editId').value = id;
                         document.getElementById('editProductname').value = productname;
                         document.getElementById('editCategory').value = category;
+                       
                         document.getElementById('editSubCategory').value = subCategory;
-                        document.getElementById('editRentalMode').value = rentalMode;
+                        //alert("hit1");
+                        document.getElementById('editRentalMode').selectedIndex = rentModeIndex;
+                        //alert("hit2");
                         document.getElementById('editRentalPrice').value = price;
+                        //alert("hit3");
                         document.getElementById('editStatus').selectedIndex = selectedStatusIndex;
                     // document.getElementById('editURL').value = url;
                         document.getElementById('editForm').style.display = 'block';
                         document.getElementById('editForm').style.display = 'flex';
+                        //alert(rentModeIndex);
                         
                     }
 

@@ -116,5 +116,28 @@ class HomeCls
 
         return $reqDetails;
     }
+    // Function to fetch request details
+    public function FetchReportedUserDetails()
+    {
+        $reqDetails = [
+            "totalRec" => ['totalRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM report")],
+            "totalActiveRec" => ['totalActiveRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM report WHERE status = 1")],
+            "totalInActiveRec" => ['totalInActiveRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM report WHERE status = 0")],
+            "totalCreatedTodayRec" => ['totalCreatedTodayRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM report WHERE DATE(created_at) = CURDATE()")],
+        ];
+
+        return $reqDetails;
+    }
+    public function FetchReportedProductDetails()
+    {
+        $reqDetails = [
+            "totalRec" => ['totalRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM product_report")],
+            "totalActiveRec" => ['totalActiveRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM product_report WHERE status = 'Open'")],
+            "totalInActiveRec" => ['totalInActiveRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM product_report WHERE status != 'Open'")],
+            "totalCreatedTodayRec" => ['totalCreatedTodayRec' => $this->executeCountQuery("SELECT COUNT(*) AS record_count FROM product_report WHERE DATE(created_at) = CURDATE()")],
+        ];
+
+        return $reqDetails;
+    }
 }
 ?>

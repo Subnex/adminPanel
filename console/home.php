@@ -22,6 +22,9 @@ session_start();
  $productReqDetails = $homeCls->FetchOutGoingRequestDetails();
  $dealDetails = $homeCls->FetchDealDetails();
  $reqDetails = $homeCls->FetchReqDetails();
+ $reportedUserDetails = $homeCls->FetchReportedUserDetails();
+ $reportedProductDetails = $homeCls->FetchReportedProductDetails();
+ 
  //$productDetails = $products['details']; 
  //print_r($categoryDetails['totalRec']);
      
@@ -115,6 +118,30 @@ session_start();
                         <p>Pending Request <span  style="float: right;margin-right:10px;"><?php print_r( $reqDetails['totalActiveRec']['totalActiveRec']);?></span></p>
                         <p>Approved Request <span  style="float: right;margin-right:10px;"><?php print_r( $reqDetails['totalInActiveRec']['totalInActiveRec']);?></span></p>
                         <p>Today's Request <span  style="float: right;margin-right:10px;"><?php print_r( $reqDetails['totalCreatedTodayRec']['totalCreatedTodayRec']);?></span></p>
+                 
+                        <div class="gotoPageDiv"><a href ="../console/userMgnt.php" >Go to Page</a></div> 
+                    </div>
+                     <!-- Reported Product  Binding --->
+                     <div class="DetailDivCls">
+                        <div class="innerHeadDiv">
+                        <img src="../console/img/Productrequest.gif" class="imgCls" /> Reported Products
+                        </div>
+                        <p>Total Reported Products  <span  style="float: right;margin-right:10px;"><?php print_r( $reportedProductDetails['totalRec']['totalRec']);?></span></p>
+                        <p>Total Pending <span  style="float: right;margin-right:10px;"><?php print_r( $reportedProductDetails['totalActiveRec']['totalActiveRec']);?></span></p>
+                        <p>Total Verified <span  style="float: right;margin-right:10px;"><?php print_r( $reportedProductDetails['totalInActiveRec']['totalInActiveRec']);?></span></p>
+                        <p>Today's Reported Products <span  style="float: right;margin-right:10px;"><?php print_r( $reportedProductDetails['totalCreatedTodayRec']['totalCreatedTodayRec']);?></span></p>
+                 
+                        <div class="gotoPageDiv"><a href ="../console/reportedProducts.php" >Go to Page</a></div>
+                    </div>
+                     <!-- Reported Accounts  Binding --->
+                     <div class="DetailDivCls">
+                        <div class="innerHeadDiv">
+                        <img src="../console/img/Productrequest.gif" class="imgCls" /> Reported Users 
+                        </div>
+                        <p>Total Reported Users  <span  style="float: right;margin-right:10px;"><?php print_r( $reportedUserDetails['totalRec']['totalRec']);?></span></p>
+                        <p>In Review <span  style="float: right;margin-right:10px;"><?php print_r( $reportedUserDetails['totalActiveRec']['totalActiveRec']);?></span></p>
+                        <p>Total Verified <span  style="float: right;margin-right:10px;"><?php print_r( $reportedUserDetails['totalInActiveRec']['totalInActiveRec']);?></span></p>
+                        <p>Today's Reported User <span  style="float: right;margin-right:10px;"><?php print_r( $reportedUserDetails['totalCreatedTodayRec']['totalCreatedTodayRec']);?></span></p>
                  
                         <div class="gotoPageDiv"><a href ="../console/userMgnt.php" >Go to Page</a></div>
                     </div>

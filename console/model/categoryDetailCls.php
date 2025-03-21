@@ -58,7 +58,7 @@ private $ds;
          $subCatId = $subCatCode;
          $catName =$_POST["newCatName"];
          $newStatus = 0; 
-         $createdById='afrdRp4gxGqMy2q6do2mH2rLBljpeABA4dMin';
+         $createdById=$_SESSION["userCode"];//'afrdRp4gxGqMy2q6do2mH2rLBljpeABA4dMin';
 
          if($_POST['newStatus'] =='Active')
          {
